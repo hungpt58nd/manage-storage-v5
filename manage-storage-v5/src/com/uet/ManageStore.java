@@ -40,6 +40,10 @@ public class ManageStore extends javax.swing.JFrame {
         this.manageMenu.setVisible(false);
         this.importMenu.setVisible(false);
         this.exportMenu.setVisible(false);
+        this.customerMenu.setVisible(false);
+        this.providerMenu.setVisible(false);
+        this.statisticMenu.setVisible(false);
+        
         panel.setVisible(true);
         validate();
     }
@@ -109,6 +113,39 @@ public class ManageStore extends javax.swing.JFrame {
         codeExportCb = new javax.swing.JComboBox<>();
         providerExportCb = new javax.swing.JComboBox<>();
         jLabel15 = new javax.swing.JLabel();
+        customerMenu = new javax.swing.JPanel();
+        nameCustomerInput = new javax.swing.JTextField();
+        jLabel16 = new javax.swing.JLabel();
+        addressCustomerInput = new javax.swing.JTextField();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        phoneCustomerInput = new javax.swing.JTextField();
+        noteCustomerInput = new javax.swing.JTextField();
+        jLabel22 = new javax.swing.JLabel();
+        addCustomerBtn = new javax.swing.JButton();
+        editCustomerBtn = new javax.swing.JButton();
+        deleteCustomerBtn = new javax.swing.JButton();
+        customerScrollPane = new javax.swing.JScrollPane();
+        customerTable = new javax.swing.JTable();
+        providerMenu = new javax.swing.JPanel();
+        nameProviderInput = new javax.swing.JTextField();
+        jLabel19 = new javax.swing.JLabel();
+        addressProviderInput = new javax.swing.JTextField();
+        jLabel20 = new javax.swing.JLabel();
+        jLabel21 = new javax.swing.JLabel();
+        phoneProviderInput = new javax.swing.JTextField();
+        noteCustomerInput1 = new javax.swing.JTextField();
+        jLabel23 = new javax.swing.JLabel();
+        addCustomerBtn1 = new javax.swing.JButton();
+        editProviderBtn = new javax.swing.JButton();
+        deleteProviderBtn = new javax.swing.JButton();
+        providerScrollPane = new javax.swing.JScrollPane();
+        providerTable = new javax.swing.JTable();
+        statisticMenu = new javax.swing.JPanel();
+        exportStatisticBtn = new javax.swing.JButton();
+        importStatisticBtn = new javax.swing.JButton();
+        statisticScrollPane = new javax.swing.JScrollPane();
+        statisticTable = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -509,6 +546,241 @@ public class ManageStore extends javax.swing.JFrame {
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE))
         );
 
+        jLabel16.setText("Tên khách hàng");
+
+        jLabel17.setText("Địa chỉ");
+
+        jLabel18.setText("Điện thoại");
+
+        jLabel22.setText("Ghi chú");
+
+        addCustomerBtn.setText("Thêm");
+
+        editCustomerBtn.setText("Sửa");
+
+        deleteCustomerBtn.setText("Xóa");
+
+        customerTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "STT", "Tên khách hàng", "Địa chỉ", "Số điện thoại", "Ngày tạo", "Tổng tiền", "Ghi chú"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        customerScrollPane.setViewportView(customerTable);
+
+        javax.swing.GroupLayout customerMenuLayout = new javax.swing.GroupLayout(customerMenu);
+        customerMenu.setLayout(customerMenuLayout);
+        customerMenuLayout.setHorizontalGroup(
+            customerMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(customerMenuLayout.createSequentialGroup()
+                .addGap(305, 305, 305)
+                .addComponent(addCustomerBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(29, 29, 29)
+                .addComponent(editCustomerBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(29, 29, 29)
+                .addComponent(deleteCustomerBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(customerScrollPane)
+            .addGroup(customerMenuLayout.createSequentialGroup()
+                .addGap(80, 80, 80)
+                .addGroup(customerMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel16)
+                    .addComponent(nameCustomerInput, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(47, 47, 47)
+                .addGroup(customerMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel17)
+                    .addComponent(addressCustomerInput, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(54, 54, 54)
+                .addGroup(customerMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel18)
+                    .addComponent(phoneCustomerInput, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+                .addGroup(customerMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel22)
+                    .addComponent(noteCustomerInput, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(67, 67, 67))
+        );
+        customerMenuLayout.setVerticalGroup(
+            customerMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(customerMenuLayout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addGroup(customerMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel16)
+                    .addComponent(jLabel17)
+                    .addComponent(jLabel18)
+                    .addComponent(jLabel22))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(customerMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nameCustomerInput, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(addressCustomerInput, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(phoneCustomerInput, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(noteCustomerInput, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(32, 32, 32)
+                .addGroup(customerMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addCustomerBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(editCustomerBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(deleteCustomerBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(customerScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE))
+        );
+
+        jLabel19.setText("Tên nhà cung cấp");
+
+        jLabel20.setText("Địa chỉ");
+
+        jLabel21.setText("Điện thoại");
+
+        jLabel23.setText("Ghi chú");
+
+        addCustomerBtn1.setText("Thêm");
+
+        editProviderBtn.setText("Sửa");
+
+        deleteProviderBtn.setText("Xóa");
+
+        providerTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "STT", "Tên nhà cung cấp", "Địa chỉ", "Số điện thoại", "Ngày tạo", "Tổng tiền", "Ghi chú"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        providerScrollPane.setViewportView(providerTable);
+
+        javax.swing.GroupLayout providerMenuLayout = new javax.swing.GroupLayout(providerMenu);
+        providerMenu.setLayout(providerMenuLayout);
+        providerMenuLayout.setHorizontalGroup(
+            providerMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(providerMenuLayout.createSequentialGroup()
+                .addGap(305, 305, 305)
+                .addComponent(addCustomerBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(29, 29, 29)
+                .addComponent(editProviderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(29, 29, 29)
+                .addComponent(deleteProviderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(providerScrollPane)
+            .addGroup(providerMenuLayout.createSequentialGroup()
+                .addGap(80, 80, 80)
+                .addGroup(providerMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel19)
+                    .addComponent(nameProviderInput, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(47, 47, 47)
+                .addGroup(providerMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel20)
+                    .addComponent(addressProviderInput, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
+                .addGroup(providerMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel21)
+                    .addComponent(phoneProviderInput, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(48, 48, 48)
+                .addGroup(providerMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel23)
+                    .addComponent(noteCustomerInput1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(67, 67, 67))
+        );
+        providerMenuLayout.setVerticalGroup(
+            providerMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(providerMenuLayout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addGroup(providerMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel19)
+                    .addComponent(jLabel20)
+                    .addComponent(jLabel21)
+                    .addComponent(jLabel23))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(providerMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nameProviderInput, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(addressProviderInput, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(phoneProviderInput, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(noteCustomerInput1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(32, 32, 32)
+                .addGroup(providerMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addCustomerBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(editProviderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(deleteProviderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(providerScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE))
+        );
+
+        exportStatisticBtn.setText("Thống kê xuất hàng");
+        exportStatisticBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportStatisticBtnActionPerformed(evt);
+            }
+        });
+
+        importStatisticBtn.setText("Thống kê nhập hàng");
+
+        statisticTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "STT", "Tên", "Mã hàng", "Số lượng", "Tổng tiền"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        statisticScrollPane.setViewportView(statisticTable);
+
+        javax.swing.GroupLayout statisticMenuLayout = new javax.swing.GroupLayout(statisticMenu);
+        statisticMenu.setLayout(statisticMenuLayout);
+        statisticMenuLayout.setHorizontalGroup(
+            statisticMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(statisticScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 997, Short.MAX_VALUE)
+            .addGroup(statisticMenuLayout.createSequentialGroup()
+                .addGap(287, 287, 287)
+                .addComponent(exportStatisticBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(83, 83, 83)
+                .addComponent(importStatisticBtn)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        statisticMenuLayout.setVerticalGroup(
+            statisticMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(statisticMenuLayout.createSequentialGroup()
+                .addGap(61, 61, 61)
+                .addGroup(statisticMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(exportStatisticBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(importStatisticBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(60, 60, 60)
+                .addComponent(statisticScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -541,6 +813,21 @@ public class ManageStore extends javax.swing.JFrame {
                     .addContainerGap()
                     .addComponent(exportMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(customerMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap()))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(providerMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap()))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(statisticMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -568,6 +855,21 @@ public class ManageStore extends javax.swing.JFrame {
                     .addContainerGap(70, Short.MAX_VALUE)
                     .addComponent(exportMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap()))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(66, 66, 66)
+                    .addComponent(customerMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap()))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(65, 65, 65)
+                    .addComponent(providerMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap()))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(71, 71, 71)
+                    .addComponent(statisticMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
 
         pack();
@@ -589,20 +891,24 @@ public class ManageStore extends javax.swing.JFrame {
     }//GEN-LAST:event_exportMenuBtnAction
 
     private void customerMenuBtnAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customerMenuBtnAction
-        // TODO add your handling code here:
+       this.changeView(customerMenu);
     }//GEN-LAST:event_customerMenuBtnAction
 
     private void providerMenuBtnAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_providerMenuBtnAction
-        // TODO add your handling code here:
+        this.changeView(providerMenu);
     }//GEN-LAST:event_providerMenuBtnAction
 
     private void statisticMenuBtnAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statisticMenuBtnAction
-        // TODO add your handling code here:
+        this.changeView(this.statisticMenu);
     }//GEN-LAST:event_statisticMenuBtnAction
 
     private void nameManageInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameManageInputActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_nameManageInputActionPerformed
+
+    private void exportStatisticBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportStatisticBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_exportStatisticBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -640,23 +946,36 @@ public class ManageStore extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addCustomerBtn;
+    private javax.swing.JButton addCustomerBtn1;
     private javax.swing.JButton addExportBtn;
     private javax.swing.JButton addImportBtn;
     private javax.swing.JButton addManageBtn;
+    private javax.swing.JTextField addressCustomerInput;
+    private javax.swing.JTextField addressProviderInput;
     private javax.swing.JComboBox<String> codeExportCb;
     private javax.swing.JComboBox<String> codeImportCb;
     private javax.swing.JTextField codeManageInput;
+    private javax.swing.JPanel customerMenu;
     private javax.swing.JButton customerMenuBtn;
+    private javax.swing.JScrollPane customerScrollPane;
+    private javax.swing.JTable customerTable;
+    private javax.swing.JButton deleteCustomerBtn;
     private javax.swing.JButton deleteImportBtn;
     private javax.swing.JButton deleteManageBtn;
     private javax.swing.JButton deleteManageBtn2;
+    private javax.swing.JButton deleteProviderBtn;
+    private javax.swing.JButton editCustomerBtn;
     private javax.swing.JButton editExportBtn;
     private javax.swing.JButton editImportBtn;
     private javax.swing.JButton editManageBtn;
+    private javax.swing.JButton editProviderBtn;
     private javax.swing.JPanel exportMenu;
     private javax.swing.JButton exportMenuBtn;
+    private javax.swing.JButton exportStatisticBtn;
     private javax.swing.JPanel importMenu;
     private javax.swing.JButton importMenuBtn;
+    private javax.swing.JButton importStatisticBtn;
     private javax.swing.JTable importTable;
     private javax.swing.JTable importTable1;
     private javax.swing.JLabel jLabel1;
@@ -666,7 +985,15 @@ public class ManageStore extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -680,19 +1007,31 @@ public class ManageStore extends javax.swing.JFrame {
     private javax.swing.JPanel manageMenu;
     private javax.swing.JButton manageMenuBtn;
     private javax.swing.JTable manageTable;
+    private javax.swing.JTextField nameCustomerInput;
     private javax.swing.JComboBox<String> nameExportCb1;
     private javax.swing.JComboBox<String> nameImportCb;
     private javax.swing.JTextField nameManageInput;
+    private javax.swing.JTextField nameProviderInput;
+    private javax.swing.JTextField noteCustomerInput;
+    private javax.swing.JTextField noteCustomerInput1;
     private javax.swing.JTextField noteManageInput;
+    private javax.swing.JTextField phoneCustomerInput;
+    private javax.swing.JTextField phoneProviderInput;
     private javax.swing.JTextField priceExportManageInput;
     private javax.swing.JTextField priceImportManageInput;
     private javax.swing.JComboBox<String> providerExportCb;
     private javax.swing.JComboBox<String> providerImportCb;
     private javax.swing.JComboBox<String> providerManageCb;
+    private javax.swing.JPanel providerMenu;
     private javax.swing.JButton providerMenuBtn;
+    private javax.swing.JScrollPane providerScrollPane;
+    private javax.swing.JTable providerTable;
     private javax.swing.JTextField quantityExportInput;
     private javax.swing.JTextField quantityImportInput;
+    private javax.swing.JPanel statisticMenu;
     private javax.swing.JButton statisticMenuBtn;
+    private javax.swing.JScrollPane statisticScrollPane;
+    private javax.swing.JTable statisticTable;
     private javax.swing.JComboBox<String> typeManageCb;
     // End of variables declaration//GEN-END:variables
 }
