@@ -18,7 +18,7 @@ import java.util.List;
 public class PersonService {
     private FileUtil fileUtil;
 
-    public PersonService(String fileName) throws IOException {
+    public PersonService(String fileName){
         fileUtil = new FileUtil(fileName);
     }
 

@@ -6,6 +6,7 @@
 package com.uet;
 
 import com.uet.model.StorageEntity;
+import com.uet.service.PersonService;
 import com.uet.service.StorageService;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,8 +22,12 @@ public class ManageStore extends javax.swing.JFrame {
     
     private StorageService importService = new StorageService("import.txt");
     private StorageService exportService = new StorageService("export.txt");
+    private PersonService customerService = new PersonService("customer.txt");
+    private PersonService providerService = new PersonService("provider.txt");
+    
     private List<StorageEntity> imports = new ArrayList<StorageEntity>();
     private List<StorageEntity> exports = new ArrayList<StorageEntity>();
+    
     private Object[][] storageObj;
     
     public ManageStore() {
