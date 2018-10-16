@@ -5,8 +5,10 @@
  */
 package com.uet;
 
+import com.uet.model.ItemEntity;
 import com.uet.model.PersonEntity;
 import com.uet.model.StorageEntity;
+import com.uet.service.ItemService;
 import com.uet.service.PersonService;
 import com.uet.service.StorageService;
 import java.io.IOException;
@@ -14,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -29,14 +32,17 @@ public class ManageStore extends javax.swing.JFrame {
     private StorageService exportService = new StorageService("export.txt");
     private PersonService customerService = new PersonService("customer.txt");
     private PersonService providerService = new PersonService("provider.txt");
+    private ItemService itemService = new ItemService("item.txt");
 
     private List<PersonEntity> customers = new ArrayList<>();
     private List<PersonEntity> providers = new ArrayList<>();
     private List<StorageEntity> imports = new ArrayList<StorageEntity>();
     private List<StorageEntity> exports = new ArrayList<StorageEntity>();
+    private List<ItemEntity> items = new ArrayList<>();
     
     private Object[][] storageObj;
     private Object[][] personObj;
+    private Object[][] itemObj;
 
     private int selectedIndex = -1;
 
@@ -47,12 +53,13 @@ public class ManageStore extends javax.swing.JFrame {
     
     private void initData(){
         this.changeView(manageMenu);
-
+        renderManageTable();
         try {
             imports = importService.convertData();
             exports = exportService.convertData();
             customers = customerService.convertData();
             providers = providerService.convertData();
+            items = itemService.convertData();
         } catch (Exception e){}
 
     }
@@ -82,6 +89,25 @@ public class ManageStore extends javax.swing.JFrame {
                     addressProviderInput.setText(providerTable.getValueAt(providerTable.getSelectedRow(), 2).toString());
                     phoneProviderInput.setText(providerTable.getValueAt(providerTable.getSelectedRow(), 3).toString());
                     noteProviderInput.setText(providerTable.getValueAt(providerTable.getSelectedRow(), 6).toString());
+                } catch (Exception e){
+                    selectedIndex = -1;
+                }
+            }
+        });
+    }
+
+    private void selectedItemRow(){
+        manageTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+            public void valueChanged(ListSelectionEvent event) {
+                try{
+                    selectedIndex = Integer.parseInt(manageTable.getValueAt(manageTable.getSelectedRow(), 0).toString());
+                    nameManageInput.setText(manageTable.getValueAt(manageTable.getSelectedRow(), 1).toString());
+                    codeManageInput.setText(manageTable.getValueAt(manageTable.getSelectedRow(), 2).toString());
+                    typeManageCb.setSelectedItem(manageTable.getValueAt(manageTable.getSelectedRow(), 3).toString());
+                    providerManageCb.setSelectedItem(manageTable.getValueAt(manageTable.getSelectedRow(), 4).toString());
+                    priceImportManageInput.setText(manageTable.getValueAt(manageTable.getSelectedRow(), 6).toString());
+                    priceExportManageInput.setText(manageTable.getValueAt(manageTable.getSelectedRow(), 7).toString());
+                    noteManageInput.setText(manageTable.getValueAt(manageTable.getSelectedRow(), 8).toString());
                 } catch (Exception e){
                     selectedIndex = -1;
                 }
@@ -126,6 +152,28 @@ public class ManageStore extends javax.swing.JFrame {
         selectedProviderRow();
     }
 
+    private void renderManageTable(){
+        try {
+            providers = providerService.convertData();
+        } catch (Exception e){}
+
+        List<String> providerNames = providers.stream().map(e -> e.name).collect(Collectors.toList());
+        if(providerNames.size() == 0){
+            providerNames.add("VNPT");
+        }
+
+        for(int i = 0; i < providerNames.size(); i++){
+            providerManageCb.addItem(providerNames.get(0));
+        }
+
+        removeRowInTable(manageTable);
+        for(int i = 0; i < items.size(); i++){
+            ((DefaultTableModel)this.manageTable.getModel()).addRow(itemObj[i]);
+        }
+
+        selectedItemRow();
+    }
+
     private PersonEntity validateProviderMenu(){
         PersonEntity provider = new PersonEntity();
         provider.name = nameProviderInput.getText();
@@ -160,6 +208,32 @@ public class ManageStore extends javax.swing.JFrame {
         } else {
             return customer;
         }
+    }
+
+    private ItemEntity validateManageMenu(){
+        ItemEntity itemEntity = new ItemEntity();
+        itemEntity.name = nameManageInput.getText();
+        itemEntity.code = codeManageInput.getText();
+        itemEntity.type = typeManageCb.getSelectedItem().toString();
+        itemEntity.provider = providerManageCb.getSelectedItem().toString();
+        itemEntity.note = priceExportManageInput.getText();
+        itemEntity.quantity = 0;
+
+        try{
+            itemEntity.priceImport = Integer.parseInt(priceImportManageInput.getText());
+            itemEntity.priceExport = Integer.parseInt(priceExportManageInput.getText());
+
+            if (itemEntity.name.equals("") || itemEntity.code.equals("")){
+                JOptionPane.showMessageDialog(null, "Hoàn thành thông tin sản phẩm");
+                return null;
+            } else {
+                return itemEntity;
+            }
+        } catch (Exception e){
+            JOptionPane.showMessageDialog(null, "Nhập giá sản phẩm là số");
+        }
+
+        return null;
     }
 
     private void removeRowInTable(JTable table){
@@ -315,11 +389,11 @@ public class ManageStore extends javax.swing.JFrame {
 
         jLabel2.setText("Mã sản phẩm");
 
-        typeManageCb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        typeManageCb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cái", "Chiếc", "Kg" }));
 
         jLabel3.setText("Đơn vị");
 
-        providerManageCb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        providerManageCb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { }));
 
         jLabel4.setText("Nhà cung cấp");
 
@@ -330,6 +404,11 @@ public class ManageStore extends javax.swing.JFrame {
         jLabel7.setText("Ghi chú");
 
         addManageBtn.setText("Thêm");
+        addManageBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addManageBtnActionPerformed(evt);
+            }
+        });
 
         editManageBtn.setText("Sửa");
 
@@ -337,10 +416,6 @@ public class ManageStore extends javax.swing.JFrame {
 
         manageTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
                 "STT", "Tên sản phẩm", "Mã sản phẩm", "Đơn vị", "Nhà cung cấp", "Số lượng", "Giá nhập", "Giá xuất", "Ghi chú"
@@ -455,6 +530,10 @@ public class ManageStore extends javax.swing.JFrame {
 
         importTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
                 "STT", "Tên sản phẩm", "Mã sản phẩm", "Đơn vị", "Nhà cung cấp", "Số lượng", "Giá nhập", "Giá xuất", "Ghi chú"
@@ -560,6 +639,10 @@ public class ManageStore extends javax.swing.JFrame {
 
         importTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
                 "STT", "Tên sản phẩm", "Mã sản phẩm", "Đơn vị", "Nhà cung cấp", "Số lượng", "Giá nhập", "Giá xuất", "Ghi chú"
@@ -682,6 +765,10 @@ public class ManageStore extends javax.swing.JFrame {
 
         customerTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
                 "STT", "Tên khách hàng", "Địa chỉ", "Số điện thoại", "Ngày tạo", "Tổng tiền", "Ghi chú"
@@ -784,6 +871,10 @@ public class ManageStore extends javax.swing.JFrame {
 
         providerTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
                 "STT", "Tên nhà cung cấp", "Địa chỉ", "Số điện thoại", "Ngày tạo", "Tổng tiền", "Ghi chú"
@@ -866,6 +957,10 @@ public class ManageStore extends javax.swing.JFrame {
 
         statisticTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
                 "STT", "Tên", "Mã hàng", "Số lượng", "Tổng tiền"
@@ -1071,6 +1166,7 @@ public class ManageStore extends javax.swing.JFrame {
             customerService.save(customers);
             personObj = customerService.generatePersonObject(customers);
             renderCustomerTable();
+            selectedIndex = -1;
         }
     }//GEN-LAST:event_deleteCustomerBtnActionPerformed
 
@@ -1108,8 +1204,19 @@ public class ManageStore extends javax.swing.JFrame {
             providerService.save(providers);
             personObj = providerService.generatePersonObject(providers);
             renderProviderTable();
+            selectedIndex = -1;
         }
     }//GEN-LAST:event_deleteProviderBtnActionPerformed
+
+    private void addManageBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addManageBtnActionPerformed
+        ItemEntity itemEntity = validateManageMenu();
+        if(itemEntity != null) {
+            items.add(itemEntity);
+            itemService.save(items);
+
+            ((DefaultTableModel)manageTable.getModel()).addRow(itemService.generateItemObject(items.size(), itemEntity));
+        }
+    }//GEN-LAST:event_addManageBtnActionPerformed
 
     /**
      * @param args the command line arguments
