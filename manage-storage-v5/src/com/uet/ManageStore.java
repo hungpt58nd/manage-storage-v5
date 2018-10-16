@@ -5,27 +5,50 @@
  */
 package com.uet;
 
+import com.uet.model.StorageEntity;
+import com.uet.service.StorageService;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author Storm Spirit
  */
 public class ManageStore extends javax.swing.JFrame {
-
-    /**
-     * Creates new form ManageStore
-     */
+    
+    private StorageService importService = new StorageService("import.txt");
+    private StorageService exportService = new StorageService("export.txt");
+    private List<StorageEntity> imports = new ArrayList<StorageEntity>();
+    private List<StorageEntity> exports = new ArrayList<StorageEntity>();
+    private Object[][] storageObj;
+    
     public ManageStore() {
         initComponents();
         this.changeView(manageMenu);
+    }   
+    
+    private void initData() throws IOException{
+        imports = importService.convertData();
+        exports = exportService.convertData();
+        
     }
 
     private void changeView(JPanel panel){
         this.manageMenu.setVisible(false);
         this.importMenu.setVisible(false);
+        this.exportMenu.setVisible(false);
         panel.setVisible(true);
         validate();
+    }
+    
+    private void renderImportTable(){
+        this.importTable.removeAll();
+        for(int i = 0; i < imports.size(); i++){
+            ((DefaultTableModel)this.importTable.getModel()).addRow(storageObj[i]);
+        }        
     }
    
     @SuppressWarnings("unchecked")
@@ -79,7 +102,7 @@ public class ManageStore extends javax.swing.JFrame {
         jLabel14 = new javax.swing.JLabel();
         addExportBtn = new javax.swing.JButton();
         editExportBtn = new javax.swing.JButton();
-        deleteExportBtn = new javax.swing.JButton();
+        deleteManageBtn2 = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         importTable1 = new javax.swing.JTable();
         nameExportCb1 = new javax.swing.JComboBox<>();
@@ -228,7 +251,7 @@ public class ManageStore extends javax.swing.JFrame {
                         .addGroup(manageMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(manageMenuLayout.createSequentialGroup()
                                 .addComponent(jLabel7)
-                                .addContainerGap())
+                                .addContainerGap(156, Short.MAX_VALUE))
                             .addComponent(noteManageInput)))
                     .addGroup(manageMenuLayout.createSequentialGroup()
                         .addGap(29, 29, 29)
@@ -265,7 +288,7 @@ public class ManageStore extends javax.swing.JFrame {
                     .addComponent(editManageBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(deleteManageBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE))
         );
 
         jLabel8.setText("Tên sản phẩm");
@@ -351,7 +374,7 @@ public class ManageStore extends javax.swing.JFrame {
                         .addComponent(editImportBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(29, 29, 29)
                         .addComponent(deleteImportBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 148, Short.MAX_VALUE))
+                .addGap(0, 150, Short.MAX_VALUE))
         );
         importMenuLayout.setVerticalGroup(
             importMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -374,7 +397,7 @@ public class ManageStore extends javax.swing.JFrame {
                     .addComponent(editImportBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(deleteImportBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 457, Short.MAX_VALUE))
         );
 
         jLabel11.setText("Tên sản phẩm");
@@ -387,7 +410,7 @@ public class ManageStore extends javax.swing.JFrame {
 
         editExportBtn.setText("Sửa");
 
-        deleteExportBtn.setText("Xóa");
+        deleteManageBtn2.setText("Xóa");
 
         importTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -459,8 +482,8 @@ public class ManageStore extends javax.swing.JFrame {
                         .addGap(29, 29, 29)
                         .addComponent(editExportBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(29, 29, 29)
-                        .addComponent(deleteExportBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 148, Short.MAX_VALUE))
+                        .addComponent(deleteManageBtn2, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 150, Short.MAX_VALUE))
         );
         exportMenuLayout.setVerticalGroup(
             exportMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -481,9 +504,9 @@ public class ManageStore extends javax.swing.JFrame {
                 .addGroup(exportMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addExportBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(editExportBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(deleteExportBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(deleteManageBtn2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -506,18 +529,18 @@ public class ManageStore extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(statisticMenuBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(manageMenu, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(manageMenu, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(importMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addContainerGap()))
+                    .addComponent(importMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(exportMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGap(14, 14, 14)))
+                    .addComponent(exportMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -533,18 +556,18 @@ public class ManageStore extends javax.swing.JFrame {
                         .addComponent(providerMenuBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(statisticMenuBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
-                .addComponent(manageMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(manageMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
-                    .addGap(71, 71, 71)
-                    .addComponent(importMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap(71, Short.MAX_VALUE)
+                    .addComponent(importMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap()))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(exportMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGap(74, 74, 74)))
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addContainerGap(70, Short.MAX_VALUE)
+                    .addComponent(exportMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap()))
         );
 
         pack();
@@ -556,10 +579,13 @@ public class ManageStore extends javax.swing.JFrame {
 
     private void importMenuBtnAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importMenuBtnAction
         this.changeView(importMenu);
+        storageObj = importService.generateStoreObject(imports);
+        renderImportTable();
     }//GEN-LAST:event_importMenuBtnAction
 
     private void exportMenuBtnAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportMenuBtnAction
-        // TODO add your handling code here:
+        this.changeView(exportMenu);
+        storageObj = exportService.generateStoreObject(exports);
     }//GEN-LAST:event_exportMenuBtnAction
 
     private void customerMenuBtnAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customerMenuBtnAction
@@ -621,9 +647,9 @@ public class ManageStore extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> codeImportCb;
     private javax.swing.JTextField codeManageInput;
     private javax.swing.JButton customerMenuBtn;
-    private javax.swing.JButton deleteExportBtn;
     private javax.swing.JButton deleteImportBtn;
     private javax.swing.JButton deleteManageBtn;
+    private javax.swing.JButton deleteManageBtn2;
     private javax.swing.JButton editExportBtn;
     private javax.swing.JButton editImportBtn;
     private javax.swing.JButton editManageBtn;
