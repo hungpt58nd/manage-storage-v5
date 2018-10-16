@@ -5,13 +5,18 @@
  */
 package com.uet;
 
+import com.uet.model.PersonEntity;
 import com.uet.model.StorageEntity;
 import com.uet.service.PersonService;
 import com.uet.service.StorageService;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
-import javax.swing.JPanel;
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -24,21 +29,64 @@ public class ManageStore extends javax.swing.JFrame {
     private StorageService exportService = new StorageService("export.txt");
     private PersonService customerService = new PersonService("customer.txt");
     private PersonService providerService = new PersonService("provider.txt");
-    
+
+    private List<PersonEntity> customers = new ArrayList<>();
+    private List<PersonEntity> providers = new ArrayList<>();
     private List<StorageEntity> imports = new ArrayList<StorageEntity>();
     private List<StorageEntity> exports = new ArrayList<StorageEntity>();
     
     private Object[][] storageObj;
-    
+    private Object[][] personObj;
+
+    private int selectedIndex = -1;
+
     public ManageStore() {
         initComponents();
-        this.changeView(manageMenu);
+        initData();
     }   
     
-    private void initData() throws IOException{
-        imports = importService.convertData();
-        exports = exportService.convertData();
-        
+    private void initData(){
+        this.changeView(manageMenu);
+
+        try {
+            imports = importService.convertData();
+            exports = exportService.convertData();
+            customers = customerService.convertData();
+            providers = providerService.convertData();
+        } catch (Exception e){}
+
+    }
+
+    private void selectedCustomerRow(){
+        customerTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+            public void valueChanged(ListSelectionEvent event) {
+                try{
+                    selectedIndex = Integer.parseInt(customerTable.getValueAt(customerTable.getSelectedRow(), 0).toString());
+                    nameCustomerInput.setText(customerTable.getValueAt(customerTable.getSelectedRow(), 1).toString());
+                    addressCustomerInput.setText(customerTable.getValueAt(customerTable.getSelectedRow(), 2).toString());
+                    phoneCustomerInput.setText(customerTable.getValueAt(customerTable.getSelectedRow(), 3).toString());
+                    noteCustomerInput.setText(customerTable.getValueAt(customerTable.getSelectedRow(), 6).toString());
+                } catch (Exception e){
+                    selectedIndex = -1;
+                }
+            }
+        });
+    }
+
+    private void selectedProviderRow(){
+        providerTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+            public void valueChanged(ListSelectionEvent event) {
+                try{
+                    selectedIndex = Integer.parseInt(providerTable.getValueAt(providerTable.getSelectedRow(), 0).toString());
+                    nameProviderInput.setText(providerTable.getValueAt(providerTable.getSelectedRow(), 1).toString());
+                    addressProviderInput.setText(providerTable.getValueAt(providerTable.getSelectedRow(), 2).toString());
+                    phoneProviderInput.setText(providerTable.getValueAt(providerTable.getSelectedRow(), 3).toString());
+                    noteProviderInput.setText(providerTable.getValueAt(providerTable.getSelectedRow(), 6).toString());
+                } catch (Exception e){
+                    selectedIndex = -1;
+                }
+            }
+        });
     }
 
     private void changeView(JPanel panel){
@@ -54,10 +102,70 @@ public class ManageStore extends javax.swing.JFrame {
     }
     
     private void renderImportTable(){
-        this.importTable.removeAll();
+        removeRowInTable(importTable);
         for(int i = 0; i < imports.size(); i++){
             ((DefaultTableModel)this.importTable.getModel()).addRow(storageObj[i]);
         }        
+    }
+
+    private void renderCustomerTable(){
+        removeRowInTable(customerTable);
+        for(int i = 0; i < customers.size(); i++){
+            ((DefaultTableModel)this.customerTable.getModel()).addRow(personObj[i]);
+        }
+
+        selectedCustomerRow();
+    }
+
+    private void renderProviderTable(){
+        removeRowInTable(providerTable);
+        for(int i = 0; i < providers.size(); i++){
+            ((DefaultTableModel)this.providerTable.getModel()).addRow(personObj[i]);
+        }
+
+        selectedProviderRow();
+    }
+
+    private PersonEntity validateProviderMenu(){
+        PersonEntity provider = new PersonEntity();
+        provider.name = nameProviderInput.getText();
+        provider.address = addressProviderInput.getText();
+        provider.phone = phoneProviderInput.getText();
+        provider.note = noteProviderInput.getText();
+
+        provider.createdAt = new SimpleDateFormat("yyyy/MM/dd").format(Calendar.getInstance().getTime());
+        provider.total = 0; // toDo:
+
+        if(provider.name.equals("") || provider.address.equals("") || provider.phone.equals("")){
+            JOptionPane.showMessageDialog(null, "Hoàn thành thông tin theo mẫu");
+            return null;
+        } else {
+            return provider;
+        }
+    }
+
+    private PersonEntity validateCustomerMenu(){
+        PersonEntity customer = new PersonEntity();
+        customer.name = nameCustomerInput.getText();
+        customer.address = addressCustomerInput.getText();
+        customer.phone = phoneCustomerInput.getText();
+        customer.note = noteCustomerInput.getText();
+
+        customer.createdAt = new SimpleDateFormat("yyyy/MM/dd").format(Calendar.getInstance().getTime());
+        customer.total = 0; // toDo:
+
+        if(customer.name.equals("") || customer.address.equals("") || customer.phone.equals("")){
+            JOptionPane.showMessageDialog(null, "Hoàn thành thông tin theo mẫu");
+            return null;
+        } else {
+            return customer;
+        }
+    }
+
+    private void removeRowInTable(JTable table){
+        DefaultTableModel model = (DefaultTableModel)table.getModel();
+        int rows = model.getRowCount();
+        for(int i = rows - 1; i >=0; i--) model.removeRow(i);
     }
    
     @SuppressWarnings("unchecked")
@@ -139,9 +247,9 @@ public class ManageStore extends javax.swing.JFrame {
         jLabel20 = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
         phoneProviderInput = new javax.swing.JTextField();
-        noteCustomerInput1 = new javax.swing.JTextField();
+        noteProviderInput = new javax.swing.JTextField();
         jLabel23 = new javax.swing.JLabel();
-        addCustomerBtn1 = new javax.swing.JButton();
+        addProviderBtn = new javax.swing.JButton();
         editProviderBtn = new javax.swing.JButton();
         deleteProviderBtn = new javax.swing.JButton();
         providerScrollPane = new javax.swing.JScrollPane();
@@ -347,10 +455,6 @@ public class ManageStore extends javax.swing.JFrame {
 
         importTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
                 "STT", "Tên sản phẩm", "Mã sản phẩm", "Đơn vị", "Nhà cung cấp", "Số lượng", "Giá nhập", "Giá xuất", "Ghi chú"
@@ -456,10 +560,6 @@ public class ManageStore extends javax.swing.JFrame {
 
         importTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
                 "STT", "Tên sản phẩm", "Mã sản phẩm", "Đơn vị", "Nhà cung cấp", "Số lượng", "Giá nhập", "Giá xuất", "Ghi chú"
@@ -560,17 +660,28 @@ public class ManageStore extends javax.swing.JFrame {
         jLabel22.setText("Ghi chú");
 
         addCustomerBtn.setText("Thêm");
+        addCustomerBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addCustomerBtnActionPerformed(evt);
+            }
+        });
 
         editCustomerBtn.setText("Sửa");
+        editCustomerBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editCustomerBtnActionPerformed(evt);
+            }
+        });
 
         deleteCustomerBtn.setText("Xóa");
+        deleteCustomerBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteCustomerBtnActionPerformed(evt);
+            }
+        });
 
         customerTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
             },
             new String [] {
                 "STT", "Tên khách hàng", "Địa chỉ", "Số điện thoại", "Ngày tạo", "Tổng tiền", "Ghi chú"
@@ -650,18 +761,29 @@ public class ManageStore extends javax.swing.JFrame {
 
         jLabel23.setText("Ghi chú");
 
-        addCustomerBtn1.setText("Thêm");
+        addProviderBtn.setText("Thêm");
+        addProviderBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addProviderBtnActionPerformed(evt);
+            }
+        });
 
         editProviderBtn.setText("Sửa");
+        editProviderBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editProviderBtnActionPerformed(evt);
+            }
+        });
 
         deleteProviderBtn.setText("Xóa");
+        deleteProviderBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteProviderBtnActionPerformed(evt);
+            }
+        });
 
         providerTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
             },
             new String [] {
                 "STT", "Tên nhà cung cấp", "Địa chỉ", "Số điện thoại", "Ngày tạo", "Tổng tiền", "Ghi chú"
@@ -683,7 +805,7 @@ public class ManageStore extends javax.swing.JFrame {
             providerMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(providerMenuLayout.createSequentialGroup()
                 .addGap(305, 305, 305)
-                .addComponent(addCustomerBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(addProviderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29)
                 .addComponent(editProviderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29)
@@ -706,7 +828,7 @@ public class ManageStore extends javax.swing.JFrame {
                 .addGap(48, 48, 48)
                 .addGroup(providerMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel23)
-                    .addComponent(noteCustomerInput1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(noteProviderInput, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(67, 67, 67))
         );
         providerMenuLayout.setVerticalGroup(
@@ -723,10 +845,10 @@ public class ManageStore extends javax.swing.JFrame {
                     .addComponent(nameProviderInput, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(addressProviderInput, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(phoneProviderInput, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(noteCustomerInput1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(noteProviderInput, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(32, 32, 32)
                 .addGroup(providerMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(addCustomerBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(addProviderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(editProviderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(deleteProviderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -744,10 +866,6 @@ public class ManageStore extends javax.swing.JFrame {
 
         statisticTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
             },
             new String [] {
                 "STT", "Tên", "Mã hàng", "Số lượng", "Tổng tiền"
@@ -897,10 +1015,14 @@ public class ManageStore extends javax.swing.JFrame {
 
     private void customerMenuBtnAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customerMenuBtnAction
        this.changeView(customerMenu);
+       personObj = customerService.generatePersonObject(customers);
+       renderCustomerTable();
     }//GEN-LAST:event_customerMenuBtnAction
 
     private void providerMenuBtnAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_providerMenuBtnAction
         this.changeView(providerMenu);
+        personObj = providerService.generatePersonObject(providers);
+        renderProviderTable();
     }//GEN-LAST:event_providerMenuBtnAction
 
     private void statisticMenuBtnAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statisticMenuBtnAction
@@ -914,6 +1036,80 @@ public class ManageStore extends javax.swing.JFrame {
     private void exportStatisticBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportStatisticBtnActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_exportStatisticBtnActionPerformed
+
+    private void addCustomerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addCustomerBtnActionPerformed
+        PersonEntity customer = validateCustomerMenu();
+        if(customer != null) {
+            customers.add(customer);
+            customerService.save(customers);
+
+            ((DefaultTableModel)customerTable.getModel()).addRow(customerService.generatePersonObject(customers.size(), customer));
+        }
+    }//GEN-LAST:event_addCustomerBtnActionPerformed
+
+    private void editCustomerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editCustomerBtnActionPerformed
+        if (selectedIndex == -1){
+            JOptionPane.showMessageDialog(null, "Hãy chọn một hàng trong bảng");
+        } else {
+            PersonEntity customer = validateCustomerMenu();
+            if (customer != null){
+                customers.set(selectedIndex - 1, customer);
+                customerService.save(customers);
+
+                personObj = customerService.generatePersonObject(customers);
+                renderCustomerTable();
+            }
+            selectedIndex = -1;
+        }
+    }//GEN-LAST:event_editCustomerBtnActionPerformed
+
+    private void deleteCustomerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteCustomerBtnActionPerformed
+        if (selectedIndex == -1){
+            JOptionPane.showMessageDialog(null, "Hãy chọn một hàng trong bảng");
+        } else {
+            customers.remove(selectedIndex - 1);
+            customerService.save(customers);
+            personObj = customerService.generatePersonObject(customers);
+            renderCustomerTable();
+        }
+    }//GEN-LAST:event_deleteCustomerBtnActionPerformed
+
+    private void addProviderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addProviderBtnActionPerformed
+        PersonEntity provider = validateProviderMenu();
+        if(provider != null) {
+            providers.add(provider);
+            providerService.save(providers);
+
+            ((DefaultTableModel)providerTable.getModel()).addRow(providerService.generatePersonObject(providers.size(), provider));
+        }
+    }//GEN-LAST:event_addProviderBtnActionPerformed
+
+    private void editProviderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editProviderBtnActionPerformed
+        if (selectedIndex == -1){
+            JOptionPane.showMessageDialog(null, "Hãy chọn một hàng trong bảng");
+        } else {
+            PersonEntity provider = validateProviderMenu();
+            if (provider != null){
+                providers.set(selectedIndex - 1, provider);
+                providerService.save(providers);
+
+                personObj = providerService.generatePersonObject(providers);
+                renderProviderTable();
+            }
+            selectedIndex = -1;
+        }
+    }//GEN-LAST:event_editProviderBtnActionPerformed
+
+    private void deleteProviderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteProviderBtnActionPerformed
+        if (selectedIndex == -1){
+            JOptionPane.showMessageDialog(null, "Hãy chọn một hàng trong bảng");
+        } else {
+            providers.remove(selectedIndex - 1);
+            providerService.save(providers);
+            personObj = providerService.generatePersonObject(providers);
+            renderProviderTable();
+        }
+    }//GEN-LAST:event_deleteProviderBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -952,10 +1148,10 @@ public class ManageStore extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addCustomerBtn;
-    private javax.swing.JButton addCustomerBtn1;
     private javax.swing.JButton addExportBtn;
     private javax.swing.JButton addImportBtn;
     private javax.swing.JButton addManageBtn;
+    private javax.swing.JButton addProviderBtn;
     private javax.swing.JTextField addressCustomerInput;
     private javax.swing.JTextField addressProviderInput;
     private javax.swing.JComboBox<String> codeExportCb;
@@ -1018,8 +1214,8 @@ public class ManageStore extends javax.swing.JFrame {
     private javax.swing.JTextField nameManageInput;
     private javax.swing.JTextField nameProviderInput;
     private javax.swing.JTextField noteCustomerInput;
-    private javax.swing.JTextField noteCustomerInput1;
     private javax.swing.JTextField noteManageInput;
+    private javax.swing.JTextField noteProviderInput;
     private javax.swing.JTextField phoneCustomerInput;
     private javax.swing.JTextField phoneProviderInput;
     private javax.swing.JTextField priceExportManageInput;

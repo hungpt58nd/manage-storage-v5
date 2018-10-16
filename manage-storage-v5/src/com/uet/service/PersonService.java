@@ -73,4 +73,17 @@ public class PersonService {
 
         return personObj;
     }
+
+    public Object[] generatePersonObject(int index, PersonEntity personEntity){
+        Object[] personObj = new Object[7];
+        personObj[0] = index;
+        personObj[1] = personEntity.name;
+        personObj[2] = personEntity.address;
+        personObj[3] = personEntity.phone;
+        personObj[4] = personEntity.createdAt;
+        personObj[5] = personEntity.total;
+        personObj[6] = personEntity.note;
+
+        return personObj;
+    }
 }
