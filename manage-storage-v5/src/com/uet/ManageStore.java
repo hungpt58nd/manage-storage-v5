@@ -46,11 +46,17 @@ public class ManageStore extends javax.swing.JFrame {
     private Object[][] itemObj;
     private Object[][] statisticObj;
 
+    private boolean flagImport = false;
+    private boolean flagExport = false;
+
     private int selectedIndex = -1;
 
     public ManageStore() {
         initComponents();
         initData();
+        setLocationRelativeTo(null);
+        setVisible(true);
+        setResizable(false);
     }   
     
     private void initData(){
@@ -163,6 +169,7 @@ public class ManageStore extends javax.swing.JFrame {
     }
     
     private void renderImportTable(){
+        flagImport = true;
         nameImportCb.removeAllItems();
         codeImportCb.removeAllItems();
         providerImportCb.removeAllItems();
@@ -176,6 +183,8 @@ public class ManageStore extends javax.swing.JFrame {
             nameImportCb.setSelectedItem(items.get(0).name);
             codeImportCb.setSelectedItem(items.get(0).code);
         }
+
+        flagImport = false;
 
         if(providers.size() > 0){
             for(PersonEntity personEntity: providers){
@@ -191,6 +200,7 @@ public class ManageStore extends javax.swing.JFrame {
     }
 
     private void renderExportTable(){
+        flagExport = true;
         nameExportCb1.removeAllItems();
         codeExportCb.removeAllItems();
         providerExportCb.removeAllItems();
@@ -204,6 +214,8 @@ public class ManageStore extends javax.swing.JFrame {
             nameExportCb1.setSelectedItem(items.get(0).name);
             codeExportCb.setSelectedItem(items.get(0).code);
         }
+
+        flagExport = false;
 
         if(customers.size() > 0){
             for(PersonEntity personEntity: customers){
@@ -367,7 +379,7 @@ public class ManageStore extends javax.swing.JFrame {
         return null;
     }
 
-    private ItemEntity validateManageMenu(){
+    private ItemEntity validateManageMenu(boolean isEdit){
         ItemEntity itemEntity = new ItemEntity();
         itemEntity.name = nameManageInput.getText();
         itemEntity.code = codeManageInput.getText();
@@ -384,7 +396,7 @@ public class ManageStore extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Hoàn thành thông tin sản phẩm");
                 return null;
             } else {
-                if (items.stream().filter(e -> e.code.equals(itemEntity.code)).collect(Collectors.toList()).size() > 0) {
+                if (!isEdit && items.stream().filter(e -> e.code.equals(itemEntity.code)).collect(Collectors.toList()).size() > 0) {
                     JOptionPane.showMessageDialog(null, "Mã sản phẩm đã tồn tại");
                     return null;
                 } else {
@@ -573,8 +585,18 @@ public class ManageStore extends javax.swing.JFrame {
         });
 
         editManageBtn.setText("Sửa");
+        editManageBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editManageBtnActionPerformed(evt);
+            }
+        });
 
         deleteManageBtn.setText("Xóa");
+        deleteManageBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteManageBtnActionPerformed(evt);
+            }
+        });
 
         manageTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -741,8 +763,18 @@ public class ManageStore extends javax.swing.JFrame {
         }
 
         nameImportCb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {}));
+        nameImportCb.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nameImportCbActionPerformed(evt);
+            }
+        });
 
         codeImportCb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { }));
+        codeImportCb.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                codeImportCbActionPerformed(evt);
+            }
+        });
 
         providerImportCb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {}));
 
@@ -865,8 +897,18 @@ public class ManageStore extends javax.swing.JFrame {
         }
 
         nameExportCb1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {}));
+        nameExportCb1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nameExportCb1ActionPerformed(evt);
+            }
+        });
 
         codeExportCb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { }));
+        codeExportCb.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                codeExportCbActionPerformed(evt);
+            }
+        });
 
         providerExportCb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { }));
 
@@ -1412,7 +1454,7 @@ public class ManageStore extends javax.swing.JFrame {
     }//GEN-LAST:event_deleteProviderBtnActionPerformed
 
     private void addManageBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addManageBtnActionPerformed
-        ItemEntity itemEntity = validateManageMenu();
+        ItemEntity itemEntity = validateManageMenu(false);
         if(itemEntity != null) {
             items.add(itemEntity);
             itemService.save(items);
@@ -1433,7 +1475,7 @@ public class ManageStore extends javax.swing.JFrame {
             providers.set(index, personEntity);
             providerService.save(providers);
 
-            ItemEntity itemEntity = items.stream().filter(e -> e.name.equals(storageEntity.name)).findFirst().get();
+            ItemEntity itemEntity = items.stream().filter(e -> e.name.equals(storageEntity.name) && e.code.equals(storageEntity.code)).findFirst().get();
             index = items.indexOf(itemEntity);
             itemEntity.quantity += storageEntity.quantity;
             items.set(index, itemEntity);
@@ -1483,7 +1525,7 @@ public class ManageStore extends javax.swing.JFrame {
             customers.set(index, personEntity);
             customerService.save(customers);
 
-            ItemEntity itemEntity = items.stream().filter(e -> e.name.equals(storageEntity.name)).findFirst().get();
+            ItemEntity itemEntity = items.stream().filter(e -> e.name.equals(storageEntity.name) && e.code.equals(storageEntity.code)).findFirst().get();
             index = items.indexOf(itemEntity);
             itemEntity.quantity -= storageEntity.quantity;
             items.set(index, itemEntity);
@@ -1524,6 +1566,90 @@ public class ManageStore extends javax.swing.JFrame {
     private void importStatisticBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importStatisticBtnActionPerformed
         renderStatisticTable(imports);
     }//GEN-LAST:event_importStatisticBtnActionPerformed
+
+    private void codeImportCbActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_codeImportCbActionPerformed
+        if (!flagImport){
+            flagImport = true;
+            List<ItemEntity> itemEntities = items.stream().filter(e -> e.code.equals(codeImportCb.getSelectedItem().toString())).collect(Collectors.toList());
+            List<ItemEntity> itemEntities2 = items.stream().filter(e -> !e.code.equals(codeImportCb.getSelectedItem().toString())).collect(Collectors.toList());
+            itemEntities2.stream().forEach(e -> itemEntities.add(e));
+            nameImportCb.removeAllItems();
+            for(ItemEntity itemEntity: itemEntities){
+                nameImportCb.addItem(itemEntity.name);
+            }
+            flagImport = false;
+        }
+    }//GEN-LAST:event_codeImportCbActionPerformed
+
+    private void nameImportCbActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameImportCbActionPerformed
+        if(!flagImport){
+            flagImport = true;
+            List<ItemEntity> itemEntities = items.stream().filter(e -> e.name.equals(nameImportCb.getSelectedItem().toString())).collect(Collectors.toList());
+            List<ItemEntity> itemEntities2 = items.stream().filter(e -> !e.name.equals(nameImportCb.getSelectedItem().toString())).collect(Collectors.toList());
+            itemEntities2.stream().forEach(e -> itemEntities.add(e));
+            codeImportCb.removeAllItems();
+            for(ItemEntity itemEntity: itemEntities){
+                codeImportCb.addItem(itemEntity.code);
+            }
+            flagImport = false;
+        }
+    }//GEN-LAST:event_nameImportCbActionPerformed
+
+    private void nameExportCb1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameExportCb1ActionPerformed
+        if(!flagExport){
+            flagExport = true;
+            List<ItemEntity> itemEntities = items.stream().filter(e -> e.name.equals(nameExportCb1.getSelectedItem().toString())).collect(Collectors.toList());
+            List<ItemEntity> itemEntities2 = items.stream().filter(e -> !e.name.equals(nameExportCb1.getSelectedItem().toString())).collect(Collectors.toList());
+            itemEntities2.stream().forEach(e -> itemEntities.add(e));
+            codeExportCb.removeAllItems();
+            for(ItemEntity itemEntity: itemEntities){
+                codeExportCb.addItem(itemEntity.code);
+            }
+            flagExport = false;
+        }
+    }//GEN-LAST:event_nameExportCb1ActionPerformed
+
+    private void codeExportCbActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_codeExportCbActionPerformed
+        if (!flagExport){
+            flagExport = true;
+            List<ItemEntity> itemEntities = items.stream().filter(e -> e.code.equals(codeExportCb.getSelectedItem().toString())).collect(Collectors.toList());
+            List<ItemEntity> itemEntities2 = items.stream().filter(e -> !e.code.equals(codeExportCb.getSelectedItem().toString())).collect(Collectors.toList());
+            itemEntities2.stream().forEach(e -> itemEntities.add(e));
+            nameExportCb1.removeAllItems();
+            for(ItemEntity itemEntity: itemEntities){
+                nameExportCb1.addItem(itemEntity.name);
+            }
+            flagExport = false;
+        }
+    }//GEN-LAST:event_codeExportCbActionPerformed
+
+    private void editManageBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editManageBtnActionPerformed
+        if (selectedIndex == -1){
+            JOptionPane.showMessageDialog(null, "Hãy chọn một hàng trong bảng");
+        } else {
+            ItemEntity itemEntity = validateManageMenu(true);
+            if (itemEntity != null){
+                items.set(selectedIndex - 1, itemEntity);
+                itemService.save(items);
+
+                itemObj = itemService.generateItemObject(items);
+                renderManageTable();
+            }
+            selectedIndex = -1;
+        }
+    }//GEN-LAST:event_editManageBtnActionPerformed
+
+    private void deleteManageBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteManageBtnActionPerformed
+        if (selectedIndex == -1){
+            JOptionPane.showMessageDialog(null, "Hãy chọn một hàng trong bảng");
+        } else {
+            items.remove(selectedIndex - 1);
+            itemService.save(items);
+            itemObj = itemService.generateItemObject(items);
+            renderManageTable();
+            selectedIndex = -1;
+        }
+    }//GEN-LAST:event_deleteManageBtnActionPerformed
 
     /**
      * @param args the command line arguments
