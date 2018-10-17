@@ -39,10 +39,12 @@ public class ManageStore extends javax.swing.JFrame {
     private List<StorageEntity> imports = new ArrayList<StorageEntity>();
     private List<StorageEntity> exports = new ArrayList<StorageEntity>();
     private List<ItemEntity> items = new ArrayList<>();
+    private List<StorageEntity> statistics = new ArrayList<>();
     
     private Object[][] storageObj;
     private Object[][] personObj;
     private Object[][] itemObj;
+    private Object[][] statisticObj;
 
     private int selectedIndex = -1;
 
@@ -53,7 +55,7 @@ public class ManageStore extends javax.swing.JFrame {
     
     private void initData(){
         this.changeView(manageMenu);
-        renderManageTable();
+
         try {
             imports = importService.convertData();
             exports = exportService.convertData();
@@ -62,6 +64,7 @@ public class ManageStore extends javax.swing.JFrame {
             items = itemService.convertData();
         } catch (Exception e){}
 
+        renderManageTable();
     }
 
     private void selectedCustomerRow(){
@@ -73,6 +76,38 @@ public class ManageStore extends javax.swing.JFrame {
                     addressCustomerInput.setText(customerTable.getValueAt(customerTable.getSelectedRow(), 2).toString());
                     phoneCustomerInput.setText(customerTable.getValueAt(customerTable.getSelectedRow(), 3).toString());
                     noteCustomerInput.setText(customerTable.getValueAt(customerTable.getSelectedRow(), 6).toString());
+                } catch (Exception e){
+                    selectedIndex = -1;
+                }
+            }
+        });
+    }
+
+    private void selectedImportRow(){
+        importTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+            public void valueChanged(ListSelectionEvent event) {
+                try{
+                    selectedIndex = Integer.parseInt(importTable.getValueAt(importTable.getSelectedRow(), 0).toString());
+                    nameImportCb.setSelectedItem(importTable.getValueAt(importTable.getSelectedRow(), 1).toString());
+                    codeImportCb.setSelectedItem(importTable.getValueAt(importTable.getSelectedRow(), 2).toString());
+                    quantityImportInput.setText(importTable.getValueAt(importTable.getSelectedRow(), 5).toString());
+                    providerImportCb.setSelectedItem(importTable.getValueAt(importTable.getSelectedRow(), 4).toString());
+                } catch (Exception e){
+                    selectedIndex = -1;
+                }
+            }
+        });
+    }
+
+    private void selectedExportRow(){
+        importTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+            public void valueChanged(ListSelectionEvent event) {
+                try{
+                    selectedIndex = Integer.parseInt(importTable1.getValueAt(importTable1.getSelectedRow(), 0).toString());
+                    nameExportCb1.setSelectedItem(importTable1.getValueAt(importTable1.getSelectedRow(), 1).toString());
+                    codeExportCb.setSelectedItem(importTable1.getValueAt(importTable1.getSelectedRow(), 2).toString());
+                    quantityExportInput.setText(importTable1.getValueAt(importTable1.getSelectedRow(), 5).toString());
+                    providerExportCb.setSelectedItem(importTable1.getValueAt(importTable1.getSelectedRow(), 4).toString());
                 } catch (Exception e){
                     selectedIndex = -1;
                 }
@@ -128,10 +163,59 @@ public class ManageStore extends javax.swing.JFrame {
     }
     
     private void renderImportTable(){
+        nameImportCb.removeAllItems();
+        codeImportCb.removeAllItems();
+        providerImportCb.removeAllItems();
+
+        if(items.size() > 0){
+            for(int i = 0; i < items.size(); i++){
+                nameImportCb.addItem(items.get(i).name);
+                codeImportCb.addItem(items.get(i).code);
+            }
+
+            nameImportCb.setSelectedItem(items.get(0).name);
+            codeImportCb.setSelectedItem(items.get(0).code);
+        }
+
+        if(providers.size() > 0){
+            for(PersonEntity personEntity: providers){
+                providerImportCb.addItem(personEntity.name);
+            }
+        }
+
         removeRowInTable(importTable);
         for(int i = 0; i < imports.size(); i++){
             ((DefaultTableModel)this.importTable.getModel()).addRow(storageObj[i]);
-        }        
+        }
+        selectedImportRow();
+    }
+
+    private void renderExportTable(){
+        nameExportCb1.removeAllItems();
+        codeExportCb.removeAllItems();
+        providerExportCb.removeAllItems();
+
+        if(items.size() > 0){
+            for(int i = 0; i < items.size(); i++){
+                nameExportCb1.addItem(items.get(i).name);
+                codeExportCb.addItem(items.get(i).code);
+            }
+
+            nameExportCb1.setSelectedItem(items.get(0).name);
+            codeExportCb.setSelectedItem(items.get(0).code);
+        }
+
+        if(customers.size() > 0){
+            for(PersonEntity personEntity: customers){
+                providerExportCb.addItem(personEntity.name);
+            }
+        }
+
+        removeRowInTable(importTable1);
+        for(int i = 0; i < exports.size(); i++){
+            ((DefaultTableModel)this.importTable1.getModel()).addRow(storageObj[i]);
+        }
+        selectedExportRow();
     }
 
     private void renderCustomerTable(){
@@ -152,21 +236,45 @@ public class ManageStore extends javax.swing.JFrame {
         selectedProviderRow();
     }
 
-    private void renderManageTable(){
-        try {
-            providers = providerService.convertData();
-        } catch (Exception e){}
+    private void renderStatisticTable(List<StorageEntity> dataList){
+        statistics = new ArrayList<>();
+        List<String> codeList = dataList.stream().map(e -> e.code).distinct().collect(Collectors.toList());
+        for(String code: codeList){
+            StorageEntity storageEntity = new StorageEntity();
+            storageEntity.code = code;
 
-        List<String> providerNames = providers.stream().map(e -> e.name).collect(Collectors.toList());
-        if(providerNames.size() == 0){
-            providerNames.add("VNPT");
+            List<StorageEntity> tmp = dataList.stream().filter(e -> e.code.equals(code)).collect(Collectors.toList());
+            storageEntity.name = tmp.get(0).name;
+            storageEntity.quantity = tmp.stream().mapToInt(e -> e.quantity).sum();
+            storageEntity.total = tmp.stream().mapToInt(e -> e.total).sum();
+            statistics.add(storageEntity);
         }
 
-        for(int i = 0; i < providerNames.size(); i++){
-            providerManageCb.addItem(providerNames.get(0));
+        removeRowInTable(statisticTable);
+        statisticObj = new Object[statistics.size()][5];
+        for(int i = 0; i < statistics.size(); i++){
+            statisticObj[i][0] = i+1;
+            statisticObj[i][1] = statistics.get(i).name;
+            statisticObj[i][2] = statistics.get(i).code;
+            statisticObj[i][3] = statistics.get(i).quantity;
+            statisticObj[i][4] = statistics.get(i).total;
+        }
+
+        for(int i = 0; i < statistics.size(); i++){
+            ((DefaultTableModel)this.statisticTable.getModel()).addRow(statisticObj[i]);
+        }
+    }
+
+    private void renderManageTable(){
+        providerManageCb.removeAllItems();
+        if(providers.size() > 0){
+            for(int i = 0; i < providers.size(); i++){
+                providerManageCb.addItem(providers.get(0).name);
+            }
         }
 
         removeRowInTable(manageTable);
+        itemObj = itemService.generateItemObject(items);
         for(int i = 0; i < items.size(); i++){
             ((DefaultTableModel)this.manageTable.getModel()).addRow(itemObj[i]);
         }
@@ -210,27 +318,81 @@ public class ManageStore extends javax.swing.JFrame {
         }
     }
 
+    private StorageEntity validateImportMenu(){
+        ItemEntity itemEntity = items.stream().filter(e -> e.code.equals(codeImportCb.getSelectedItem().toString())).collect(Collectors.toList()).get(0);
+
+        StorageEntity storageEntity = new StorageEntity();
+        storageEntity.createdAt = new SimpleDateFormat("yyyy/MM/dd").format(Calendar.getInstance().getTime());
+        storageEntity.type = itemEntity.type;
+        storageEntity.price = itemEntity.priceImport;
+
+        try {
+            storageEntity.name = nameImportCb.getSelectedItem().toString();
+            storageEntity.code = codeImportCb.getSelectedItem().toString();
+            storageEntity.person = providerImportCb.getSelectedItem().toString();
+            storageEntity.quantity = Integer.parseInt(quantityImportInput.getText());
+            storageEntity.total = storageEntity.quantity * storageEntity.price;
+
+            return storageEntity;
+        } catch (Exception e){
+            JOptionPane.showMessageDialog(null, "Thông tin trên mẫu thiếu");
+        }
+
+        return null;
+    }
+
+    private StorageEntity validateExportMenu(){
+        ItemEntity itemEntity = items.stream().filter(e -> e.code.equals(codeExportCb.getSelectedItem().toString())).collect(Collectors.toList()).get(0);
+
+        StorageEntity storageEntity = new StorageEntity();
+        storageEntity.createdAt = new SimpleDateFormat("yyyy/MM/dd").format(Calendar.getInstance().getTime());
+        storageEntity.type = itemEntity.type;
+        storageEntity.price = itemEntity.priceImport;
+
+        try {
+            storageEntity.name = nameExportCb1.getSelectedItem().toString();
+            storageEntity.code = codeExportCb.getSelectedItem().toString();
+            storageEntity.person = providerExportCb.getSelectedItem().toString();
+            storageEntity.quantity = Integer.parseInt(quantityExportInput.getText());
+            if (storageEntity.quantity > itemEntity.quantity){
+                JOptionPane.showMessageDialog(null, "Vượt quá số lượng cho phép");
+            } else {
+                storageEntity.total = storageEntity.quantity * storageEntity.price;
+                return storageEntity;
+            }
+        } catch (Exception e){
+            JOptionPane.showMessageDialog(null, "Thông tin trên mẫu thiếu");
+        }
+
+        return null;
+    }
+
     private ItemEntity validateManageMenu(){
         ItemEntity itemEntity = new ItemEntity();
         itemEntity.name = nameManageInput.getText();
         itemEntity.code = codeManageInput.getText();
-        itemEntity.type = typeManageCb.getSelectedItem().toString();
-        itemEntity.provider = providerManageCb.getSelectedItem().toString();
         itemEntity.note = priceExportManageInput.getText();
         itemEntity.quantity = 0;
 
         try{
+            itemEntity.type = typeManageCb.getSelectedItem().toString();
+            itemEntity.provider = providerManageCb.getSelectedItem().toString();
             itemEntity.priceImport = Integer.parseInt(priceImportManageInput.getText());
             itemEntity.priceExport = Integer.parseInt(priceExportManageInput.getText());
 
-            if (itemEntity.name.equals("") || itemEntity.code.equals("")){
+            if (itemEntity.name.equals("") || itemEntity.code.equals("") || itemEntity.provider == null){
                 JOptionPane.showMessageDialog(null, "Hoàn thành thông tin sản phẩm");
                 return null;
             } else {
-                return itemEntity;
+                if (items.stream().filter(e -> e.code.equals(itemEntity.code)).collect(Collectors.toList()).size() > 0) {
+                    JOptionPane.showMessageDialog(null, "Mã sản phẩm đã tồn tại");
+                    return null;
+                } else {
+                    return itemEntity;
+                }
             }
         } catch (Exception e){
-            JOptionPane.showMessageDialog(null, "Nhập giá sản phẩm là số");
+            JOptionPane.showMessageDialog(null, "Thông tin trên mẫu thiếu");
         }
 
         return null;
@@ -389,7 +551,7 @@ public class ManageStore extends javax.swing.JFrame {
 
         jLabel2.setText("Mã sản phẩm");
 
-        typeManageCb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cái", "Chiếc", "Kg" }));
+        typeManageCb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {"Cái", "Hộp", "Kg"}));
 
         jLabel3.setText("Đơn vị");
 
@@ -416,6 +578,10 @@ public class ManageStore extends javax.swing.JFrame {
 
         manageTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
                 "STT", "Tên sản phẩm", "Mã sản phẩm", "Đơn vị", "Nhà cung cấp", "Số lượng", "Giá nhập", "Giá xuất", "Ghi chú"
@@ -523,10 +689,25 @@ public class ManageStore extends javax.swing.JFrame {
         jLabel12.setText("Số lượng");
 
         addImportBtn.setText("Thêm");
+        addImportBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addImportBtnActionPerformed(evt);
+            }
+        });
 
         editImportBtn.setText("Sửa");
+        editImportBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editImportBtnActionPerformed(evt);
+            }
+        });
 
         deleteImportBtn.setText("Xóa");
+        deleteImportBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteImportBtnActionPerformed(evt);
+            }
+        });
 
         importTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -536,7 +717,7 @@ public class ManageStore extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "STT", "Tên sản phẩm", "Mã sản phẩm", "Đơn vị", "Nhà cung cấp", "Số lượng", "Giá nhập", "Giá xuất", "Ghi chú"
+                "STT", "Tên sản phẩm", "Mã sản phẩm", "Đơn vị", "Nhà cung cấp", "Số lượng", "Đơn giá", "Tổng tiền", "Ngày nhập"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -559,11 +740,11 @@ public class ManageStore extends javax.swing.JFrame {
             importTable.getColumnModel().getColumn(8).setPreferredWidth(120);
         }
 
-        nameImportCb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        nameImportCb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {}));
 
-        codeImportCb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        codeImportCb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { }));
 
-        providerImportCb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        providerImportCb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {}));
 
         jLabel10.setText("Nhà cung cấp");
 
@@ -632,10 +813,25 @@ public class ManageStore extends javax.swing.JFrame {
         jLabel14.setText("Số lượng");
 
         addExportBtn.setText("Thêm");
+        addExportBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addExportBtnActionPerformed(evt);
+            }
+        });
 
         editExportBtn.setText("Sửa");
+        editExportBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editExportBtnActionPerformed(evt);
+            }
+        });
 
         deleteManageBtn2.setText("Xóa");
+        deleteManageBtn2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteManageBtn2ActionPerformed(evt);
+            }
+        });
 
         importTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -645,7 +841,7 @@ public class ManageStore extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "STT", "Tên sản phẩm", "Mã sản phẩm", "Đơn vị", "Nhà cung cấp", "Số lượng", "Giá nhập", "Giá xuất", "Ghi chú"
+                "STT", "Tên sản phẩm", "Mã sản phẩm", "Đơn vị", "Khách hàng", "Số lượng", "Giá nhập", "Giá xuất", "Ghi chú"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -668,13 +864,13 @@ public class ManageStore extends javax.swing.JFrame {
             importTable1.getColumnModel().getColumn(8).setPreferredWidth(120);
         }
 
-        nameExportCb1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        nameExportCb1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {}));
 
-        codeExportCb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        codeExportCb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { }));
 
-        providerExportCb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        providerExportCb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { }));
 
-        jLabel15.setText("Nhà cung cấp");
+        jLabel15.setText("Khách hàng");
 
         javax.swing.GroupLayout exportMenuLayout = new javax.swing.GroupLayout(exportMenu);
         exportMenu.setLayout(exportMenuLayout);
@@ -954,6 +1150,11 @@ public class ManageStore extends javax.swing.JFrame {
         });
 
         importStatisticBtn.setText("Thống kê nhập hàng");
+        importStatisticBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                importStatisticBtnActionPerformed(evt);
+            }
+        });
 
         statisticTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -983,8 +1184,8 @@ public class ManageStore extends javax.swing.JFrame {
             .addComponent(statisticScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 997, Short.MAX_VALUE)
             .addGroup(statisticMenuLayout.createSequentialGroup()
                 .addGap(287, 287, 287)
-                .addComponent(exportStatisticBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(83, 83, 83)
+                .addComponent(exportStatisticBtn)
+                .addGap(52, 52, 52)
                 .addComponent(importStatisticBtn)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
@@ -1095,6 +1296,7 @@ public class ManageStore extends javax.swing.JFrame {
 
     private void manageMenuBtnAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageMenuBtnAction
         this.changeView(manageMenu);
+        renderManageTable();
     }//GEN-LAST:event_manageMenuBtnAction
 
     private void importMenuBtnAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importMenuBtnAction
@@ -1106,6 +1308,7 @@ public class ManageStore extends javax.swing.JFrame {
     private void exportMenuBtnAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportMenuBtnAction
         this.changeView(exportMenu);
         storageObj = exportService.generateStoreObject(exports);
+        renderExportTable();
     }//GEN-LAST:event_exportMenuBtnAction
 
     private void customerMenuBtnAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customerMenuBtnAction
@@ -1129,7 +1332,7 @@ public class ManageStore extends javax.swing.JFrame {
     }//GEN-LAST:event_nameManageInputActionPerformed
 
     private void exportStatisticBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportStatisticBtnActionPerformed
-        // TODO add your handling code here:
+        renderStatisticTable(exports);
     }//GEN-LAST:event_exportStatisticBtnActionPerformed
 
     private void addCustomerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addCustomerBtnActionPerformed
@@ -1217,6 +1420,110 @@ public class ManageStore extends javax.swing.JFrame {
             ((DefaultTableModel)manageTable.getModel()).addRow(itemService.generateItemObject(items.size(), itemEntity));
         }
     }//GEN-LAST:event_addManageBtnActionPerformed
+
+    private void addImportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addImportBtnActionPerformed
+        StorageEntity storageEntity = validateImportMenu();
+        if(storageEntity != null) {
+            imports.add(storageEntity);
+            importService.save(imports);
+
+            PersonEntity personEntity = providers.stream().filter(e -> e.name.equals(storageEntity.person)).findFirst().get();
+            int index = providers.indexOf(personEntity);
+            personEntity.total += storageEntity.total;
+            providers.set(index, personEntity);
+            providerService.save(providers);
+
+            ItemEntity itemEntity = items.stream().filter(e -> e.name.equals(storageEntity.name)).findFirst().get();
+            index = items.indexOf(itemEntity);
+            itemEntity.quantity += storageEntity.quantity;
+            items.set(index, itemEntity);
+            itemService.save(items);
+
+            ((DefaultTableModel)importTable.getModel()).addRow(importService.generateStoreObject(imports.size(), storageEntity));
+        }
+    }//GEN-LAST:event_addImportBtnActionPerformed
+
+    private void editImportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editImportBtnActionPerformed
+        if (selectedIndex == -1){
+            JOptionPane.showMessageDialog(null, "Hãy chọn một hàng trong bảng");
+        } else {
+            StorageEntity storageEntity = validateImportMenu();
+            if (storageEntity != null){
+                imports.set(selectedIndex - 1, storageEntity);
+                importService.save(imports);
+
+                storageObj = importService.generateStoreObject(imports);
+                renderImportTable();
+            }
+            selectedIndex = -1;
+        }
+    }//GEN-LAST:event_editImportBtnActionPerformed
+
+    private void deleteImportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteImportBtnActionPerformed
+        if (selectedIndex == -1){
+            JOptionPane.showMessageDialog(null, "Hãy chọn một hàng trong bảng");
+        } else {
+            imports.remove(selectedIndex - 1);
+            importService.save(imports);
+            storageObj = importService.generateStoreObject(imports);
+            renderImportTable();
+            selectedIndex = -1;
+        }
+    }//GEN-LAST:event_deleteImportBtnActionPerformed
+
+    private void addExportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addExportBtnActionPerformed
+        StorageEntity storageEntity = validateExportMenu();
+        if(storageEntity != null) {
+            exports.add(storageEntity);
+            exportService.save(exports);
+
+            PersonEntity personEntity = customers.stream().filter(e -> e.name.equals(storageEntity.person)).findFirst().get();
+            int index = customers.indexOf(personEntity);
+            personEntity.total += storageEntity.total;
+            customers.set(index, personEntity);
+            customerService.save(customers);
+
+            ItemEntity itemEntity = items.stream().filter(e -> e.name.equals(storageEntity.name)).findFirst().get();
+            index = items.indexOf(itemEntity);
+            itemEntity.quantity -= storageEntity.quantity;
+            items.set(index, itemEntity);
+            itemService.save(items);
+
+            ((DefaultTableModel)importTable1.getModel()).addRow(exportService.generateStoreObject(exports.size(), storageEntity));
+        }
+    }//GEN-LAST:event_addExportBtnActionPerformed
+
+    private void editExportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editExportBtnActionPerformed
+        if (selectedIndex == -1){
+            JOptionPane.showMessageDialog(null, "Hãy chọn một hàng trong bảng");
+        } else {
+            StorageEntity storageEntity = validateExportMenu();
+            if (storageEntity != null){
+                exports.set(selectedIndex - 1, storageEntity);
+                exportService.save(exports);
+
+                storageObj = exportService.generateStoreObject(exports);
+                renderExportTable();
+            }
+            selectedIndex = -1;
+        }
+    }//GEN-LAST:event_editExportBtnActionPerformed
+
+    private void deleteManageBtn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteManageBtn2ActionPerformed
+        if (selectedIndex == -1){
+            JOptionPane.showMessageDialog(null, "Hãy chọn một hàng trong bảng");
+        } else {
+            exports.remove(selectedIndex - 1);
+            exportService.save(exports);
+            storageObj = exportService.generateStoreObject(exports);
+            renderExportTable();
+            selectedIndex = -1;
+        }
+    }//GEN-LAST:event_deleteManageBtn2ActionPerformed
+
+    private void importStatisticBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importStatisticBtnActionPerformed
+        renderStatisticTable(imports);
+    }//GEN-LAST:event_importStatisticBtnActionPerformed
 
     /**
      * @param args the command line arguments
