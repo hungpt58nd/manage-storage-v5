@@ -18,7 +18,7 @@ import java.util.List;
 public class PersonService {
     private FileUtil fileUtil;
 
-    public PersonService(String fileName) throws IOException {
+    public PersonService(String fileName){
         fileUtil = new FileUtil(fileName);
     }
 
@@ -70,6 +70,19 @@ public class PersonService {
             personObj[i][5] = personEntities.get(i).total;
             personObj[i][6] = personEntities.get(i).note;
         }
+
+        return personObj;
+    }
+
+    public Object[] generatePersonObject(int index, PersonEntity personEntity){
+        Object[] personObj = new Object[7];
+        personObj[0] = index;
+        personObj[1] = personEntity.name;
+        personObj[2] = personEntity.address;
+        personObj[3] = personEntity.phone;
+        personObj[4] = personEntity.createdAt;
+        personObj[5] = personEntity.total;
+        personObj[6] = personEntity.note;
 
         return personObj;
     }

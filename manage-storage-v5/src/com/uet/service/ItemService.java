@@ -10,7 +10,7 @@ public class ItemService {
 
     private FileUtil fileUtil;
 
-    public ItemService(String fileName) throws IOException {
+    public ItemService(String fileName){
         fileUtil = new FileUtil(fileName);
     }
 
@@ -66,6 +66,21 @@ public class ItemService {
             itemObj[i][8] = itemEntities.get(i).note;
 
         }
+
+        return itemObj;
+    }
+
+    public Object[] generateItemObject(int index, ItemEntity itemEntity){
+        Object[] itemObj = new Object[9];
+        itemObj[0] = index;
+        itemObj[1] = itemEntity.name;
+        itemObj[2] = itemEntity.code;
+        itemObj[3] = itemEntity.type;
+        itemObj[4] = itemEntity.provider;
+        itemObj[5] = itemEntity.quantity;
+        itemObj[6] = itemEntity.priceImport;
+        itemObj[7] = itemEntity.priceExport;
+        itemObj[8] = itemEntity.note;
 
         return itemObj;
     }
