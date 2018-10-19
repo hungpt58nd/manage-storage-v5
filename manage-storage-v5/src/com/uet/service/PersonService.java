@@ -5,9 +5,11 @@
  */
 package com.uet.service;
 
+import com.uet.dao.DataLoader;
 import com.uet.model.PersonEntity;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,47 +17,25 @@ import java.util.List;
  *
  * @author Storm Spirit
  */
-public class PersonService {
-    private FileUtil fileUtil;
+public class PersonService extends DataLoader {
+    private DataLoader dataLoader;
+    private String type;
 
-    public PersonService(String fileName){
-        fileUtil = new FileUtil(fileName);
+    public PersonService(DataLoader dataLoader, String type){
+        this.dataLoader = dataLoader;
+        this.type = type;
     }
 
-    public void save(List<PersonEntity> personEntity){
+    public void save(PersonEntity personEntity){
         try {
-            List<String> data = new ArrayList<>();
-
-            for(PersonEntity person: personEntity){
-                data.add(person.toString());
-            }
-            fileUtil.writeData(data);
+            dataLoader.insertPerson(personEntity, type);
         } catch (Exception e){}
     }
 
-    public List convertData() throws IOException {
-        List<PersonEntity> personEntities = new ArrayList<>();
+    public List convertData() throws SQLException {
+        List<PersonEntity> personEntities = dataLoader.resolvePersonsByType(type);
 
-        List<String[]> dataFromFile = fileUtil.readData();
-        for(String[] arr: dataFromFile){
-            PersonEntity personEntity = new PersonEntity();
-            personEntity.name = arr[0];
-            personEntity.address = arr[1];
-            personEntity.phone = arr[2];
-            personEntity.createdAt = arr[3];
-            personEntity.total = Integer.parseInt(arr[4]);
-
-            try{
-                personEntity.note = arr[5];
-            } catch (Exception e){
-                personEntity.note = "";
-            }
-
-
-            personEntities.add(personEntity);
-        }
-
-        return personEntities;
+        return personEntities == null ? new ArrayList(): personEntities;
     }
 
     public Object[][] generatePersonObject(List<PersonEntity> personEntities) {

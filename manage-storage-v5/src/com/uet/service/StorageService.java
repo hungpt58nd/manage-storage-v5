@@ -1,54 +1,30 @@
 package com.uet.service;
 
+import com.uet.dao.DataLoader;
 import com.uet.model.StorageEntity;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StorageService {
-  private FileUtil fileUtil;
+public class StorageService extends DataLoader {
+  private String type;
+  private DataLoader dataLoader;
 
-  public StorageService(String fileName){
-    fileUtil = new FileUtil(fileName);
+  public StorageService(DataLoader dataLoader, String type){
+    this.dataLoader = dataLoader;
+    this.type = type;
   }
 
-  public void save(List<StorageEntity> storageEntities){
+  public void save(StorageEntity storageEntity){
     try {
-      List<String> data = new ArrayList<>();
-
-      for(StorageEntity storeEntity: storageEntities){
-        data.add(storeEntity.toString());
-      }
-      fileUtil.writeData(data);
+      dataLoader.insertStorage(storageEntity, type);
     } catch (Exception e){}
   }
 
-  public List convertData() throws IOException {
-    List<StorageEntity> storageEntities = new ArrayList<>();
-
-    List<String[]> dataFromFile = fileUtil.readData();
-    for(String[] arr: dataFromFile){
-      StorageEntity storageEntity = new StorageEntity();
-      storageEntity.name = arr[0];
-      storageEntity.code = arr[1];
-      storageEntity.person = arr[2];
-      storageEntity.createdAt = arr[3];
-      storageEntity.type = arr[4];
-      storageEntity.quantity = Integer.parseInt(arr[5]);
-      storageEntity.price = Integer.parseInt(arr[6]);
-      storageEntity.total = Integer.parseInt(arr[7]);
-
-      try{
-        storageEntity.note = arr[7];
-      } catch (Exception e){
-        storageEntity.note = "";
-      }
-
-
-      storageEntities.add(storageEntity);
-    }
-
+  public List convertData() throws SQLException {
+    List<StorageEntity> storageEntities = dataLoader.resolveStoragesByType(type);
     return storageEntities;
   }
 

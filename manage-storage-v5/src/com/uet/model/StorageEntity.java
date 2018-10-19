@@ -1,6 +1,7 @@
 package com.uet.model;
 
 public class StorageEntity {
+  public int id;
   public String name;
   public String code;
   public String person;
