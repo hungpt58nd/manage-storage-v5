@@ -5,6 +5,7 @@
  */
 package com.uet;
 
+import com.uet.dao.DataLoader;
 import com.uet.model.ItemEntity;
 import com.uet.model.PersonEntity;
 import com.uet.model.StorageEntity;
@@ -27,12 +28,13 @@ import javax.swing.table.DefaultTableModel;
  * @author Storm Spirit
  */
 public class ManageStore extends javax.swing.JFrame {
-    
-    private StorageService importService = new StorageService("import.txt");
-    private StorageService exportService = new StorageService("export.txt");
-    private PersonService customerService = new PersonService("customer.txt");
-    private PersonService providerService = new PersonService("provider.txt");
-    private ItemService itemService = new ItemService("item.txt");
+
+    private DataLoader dataLoader = new DataLoader();
+    private StorageService importService = new StorageService(dataLoader, "IMPORT");
+    private StorageService exportService = new StorageService(dataLoader, "EXPORT");
+    private PersonService customerService = new PersonService(dataLoader, "CUSTOMER");
+    private PersonService providerService = new PersonService(dataLoader,"PROVIDER");
+    private ItemService itemService = new ItemService(dataLoader);
 
     private List<PersonEntity> customers = new ArrayList<>();
     private List<PersonEntity> providers = new ArrayList<>();
@@ -68,7 +70,9 @@ public class ManageStore extends javax.swing.JFrame {
             customers = customerService.convertData();
             providers = providerService.convertData();
             items = itemService.convertData();
-        } catch (Exception e){}
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
 
         renderManageTable();
     }
@@ -1380,7 +1384,7 @@ public class ManageStore extends javax.swing.JFrame {
         PersonEntity customer = validateCustomerMenu();
         if(customer != null) {
             customers.add(customer);
-            customerService.save(customers);
+            customerService.save(customer);
 
             ((DefaultTableModel)customerTable.getModel()).addRow(customerService.generatePersonObject(customers.size(), customer));
         }
@@ -1393,7 +1397,7 @@ public class ManageStore extends javax.swing.JFrame {
             PersonEntity customer = validateCustomerMenu();
             if (customer != null){
                 customers.set(selectedIndex - 1, customer);
-                customerService.save(customers);
+                customerService.updatePerson(customer);
 
                 personObj = customerService.generatePersonObject(customers);
                 renderCustomerTable();
@@ -1406,8 +1410,8 @@ public class ManageStore extends javax.swing.JFrame {
         if (selectedIndex == -1){
             JOptionPane.showMessageDialog(null, "Hãy chọn một hàng trong bảng");
         } else {
+            customerService.deletePerson(customers.get(selectedIndex - 1));
             customers.remove(selectedIndex - 1);
-            customerService.save(customers);
             personObj = customerService.generatePersonObject(customers);
             renderCustomerTable();
             selectedIndex = -1;
@@ -1418,7 +1422,7 @@ public class ManageStore extends javax.swing.JFrame {
         PersonEntity provider = validateProviderMenu();
         if(provider != null) {
             providers.add(provider);
-            providerService.save(providers);
+            providerService.save(provider);
 
             ((DefaultTableModel)providerTable.getModel()).addRow(providerService.generatePersonObject(providers.size(), provider));
         }
@@ -1431,7 +1435,7 @@ public class ManageStore extends javax.swing.JFrame {
             PersonEntity provider = validateProviderMenu();
             if (provider != null){
                 providers.set(selectedIndex - 1, provider);
-                providerService.save(providers);
+                providerService.updatePerson(provider);
 
                 personObj = providerService.generatePersonObject(providers);
                 renderProviderTable();
@@ -1444,8 +1448,8 @@ public class ManageStore extends javax.swing.JFrame {
         if (selectedIndex == -1){
             JOptionPane.showMessageDialog(null, "Hãy chọn một hàng trong bảng");
         } else {
+            providerService.deletePerson(providers.get(selectedIndex - 1));
             providers.remove(selectedIndex - 1);
-            providerService.save(providers);
             personObj = providerService.generatePersonObject(providers);
             renderProviderTable();
             selectedIndex = -1;
@@ -1456,7 +1460,7 @@ public class ManageStore extends javax.swing.JFrame {
         ItemEntity itemEntity = validateManageMenu(false);
         if(itemEntity != null) {
             items.add(itemEntity);
-            itemService.save(items);
+            itemService.save(itemEntity);
 
             ((DefaultTableModel)manageTable.getModel()).addRow(itemService.generateItemObject(items.size(), itemEntity));
         }
@@ -1466,19 +1470,19 @@ public class ManageStore extends javax.swing.JFrame {
         StorageEntity storageEntity = validateImportMenu();
         if(storageEntity != null) {
             imports.add(storageEntity);
-            importService.save(imports);
+            importService.save(storageEntity);
 
             PersonEntity personEntity = providers.stream().filter(e -> e.name.equals(storageEntity.person)).findFirst().get();
             int index = providers.indexOf(personEntity);
             personEntity.total += storageEntity.total;
             providers.set(index, personEntity);
-            providerService.save(providers);
+            providerService.updatePerson(personEntity);
 
             ItemEntity itemEntity = items.stream().filter(e -> e.name.equals(storageEntity.name) && e.code.equals(storageEntity.code)).findFirst().get();
             index = items.indexOf(itemEntity);
             itemEntity.quantity += storageEntity.quantity;
             items.set(index, itemEntity);
-            itemService.save(items);
+            itemService.updateItem(itemEntity);
 
             ((DefaultTableModel)importTable.getModel()).addRow(importService.generateStoreObject(imports.size(), storageEntity));
         }
@@ -1491,7 +1495,7 @@ public class ManageStore extends javax.swing.JFrame {
             StorageEntity storageEntity = validateImportMenu();
             if (storageEntity != null){
                 imports.set(selectedIndex - 1, storageEntity);
-                importService.save(imports);
+                importService.updateStorage(storageEntity);
 
                 storageObj = importService.generateStoreObject(imports);
                 renderImportTable();
@@ -1504,8 +1508,8 @@ public class ManageStore extends javax.swing.JFrame {
         if (selectedIndex == -1){
             JOptionPane.showMessageDialog(null, "Hãy chọn một hàng trong bảng");
         } else {
+            importService.deleteStorage(imports.get(selectedIndex - 1));
             imports.remove(selectedIndex - 1);
-            importService.save(imports);
             storageObj = importService.generateStoreObject(imports);
             renderImportTable();
             selectedIndex = -1;
@@ -1516,19 +1520,19 @@ public class ManageStore extends javax.swing.JFrame {
         StorageEntity storageEntity = validateExportMenu();
         if(storageEntity != null) {
             exports.add(storageEntity);
-            exportService.save(exports);
+            exportService.save(storageEntity);
 
             PersonEntity personEntity = customers.stream().filter(e -> e.name.equals(storageEntity.person)).findFirst().get();
             int index = customers.indexOf(personEntity);
             personEntity.total += storageEntity.total;
             customers.set(index, personEntity);
-            customerService.save(customers);
+            customerService.updatePerson(personEntity);
 
             ItemEntity itemEntity = items.stream().filter(e -> e.name.equals(storageEntity.name) && e.code.equals(storageEntity.code)).findFirst().get();
             index = items.indexOf(itemEntity);
             itemEntity.quantity -= storageEntity.quantity;
             items.set(index, itemEntity);
-            itemService.save(items);
+            itemService.updateItem(itemEntity);
 
             ((DefaultTableModel)importTable1.getModel()).addRow(exportService.generateStoreObject(exports.size(), storageEntity));
         }
@@ -1541,7 +1545,7 @@ public class ManageStore extends javax.swing.JFrame {
             StorageEntity storageEntity = validateExportMenu();
             if (storageEntity != null){
                 exports.set(selectedIndex - 1, storageEntity);
-                exportService.save(exports);
+                exportService.updateStorage(storageEntity);
 
                 storageObj = exportService.generateStoreObject(exports);
                 renderExportTable();
@@ -1554,8 +1558,8 @@ public class ManageStore extends javax.swing.JFrame {
         if (selectedIndex == -1){
             JOptionPane.showMessageDialog(null, "Hãy chọn một hàng trong bảng");
         } else {
+            exportService.deleteStorage(exports.get(selectedIndex - 1));
             exports.remove(selectedIndex - 1);
-            exportService.save(exports);
             storageObj = exportService.generateStoreObject(exports);
             renderExportTable();
             selectedIndex = -1;
@@ -1629,7 +1633,7 @@ public class ManageStore extends javax.swing.JFrame {
             ItemEntity itemEntity = validateManageMenu(true);
             if (itemEntity != null){
                 items.set(selectedIndex - 1, itemEntity);
-                itemService.save(items);
+                itemService.updateItem(itemEntity);
 
                 itemObj = itemService.generateItemObject(items);
                 renderManageTable();
@@ -1642,8 +1646,8 @@ public class ManageStore extends javax.swing.JFrame {
         if (selectedIndex == -1){
             JOptionPane.showMessageDialog(null, "Hãy chọn một hàng trong bảng");
         } else {
+            itemService.deleteItem(items.get(selectedIndex - 1));
             items.remove(selectedIndex - 1);
-            itemService.save(items);
             itemObj = itemService.generateItemObject(items);
             renderManageTable();
             selectedIndex = -1;

@@ -1,55 +1,30 @@
 package com.uet.service;
 
+import com.uet.dao.DataLoader;
 import com.uet.model.ItemEntity;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemService {
+public class ItemService  extends DataLoader{
 
-    private FileUtil fileUtil;
+    DataLoader dataLoader;
 
-    public ItemService(String fileName){
-        fileUtil = new FileUtil(fileName);
+    public ItemService(DataLoader dataLoader){
+        this.dataLoader = dataLoader;
     }
 
-    public void save(List<ItemEntity> itemEntities){
+    public void save(ItemEntity itemEntity){
         try {
-            List<String> data = new ArrayList<>();
-
-            for(ItemEntity itemEntity: itemEntities){
-                data.add(itemEntity.toString());
-            }
-            fileUtil.writeData(data);
+            dataLoader.insertItem(itemEntity);
         } catch (Exception e){}
     }
 
-    public List convertData() throws IOException {
-        List<ItemEntity> itemEntities = new ArrayList<>();
-
-        List<String[]> dataFromFile = fileUtil.readData();
-        for(String[] arr: dataFromFile){
-            ItemEntity itemEntity = new ItemEntity();
-            itemEntity.name = arr[0];
-            itemEntity.code = arr[1];
-            itemEntity.type = arr[2];
-            itemEntity.provider = arr[3];
-            itemEntity.quantity = Integer.parseInt(arr[4]);
-            itemEntity.priceImport = Integer.parseInt(arr[5]);
-            itemEntity.priceExport = Integer.parseInt(arr[6]);
-
-            try {
-              itemEntity.note = arr[7];
-            } catch (Exception e){
-              itemEntity.note = "";
-            }
-
-            itemEntity.note = arr[7] != null ? arr[7]:"";
-
-            itemEntities.add(itemEntity);
-        }
-        return itemEntities;
+    public List convertData() throws SQLException {
+        List<ItemEntity> itemEntities = dataLoader.resolveItems();
+        return itemEntities == null ? new ArrayList(): itemEntities;
     }
 
     public Object[][] generateItemObject(List<ItemEntity> itemEntities){
