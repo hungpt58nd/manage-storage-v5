@@ -19,7 +19,9 @@ public class ItemService  extends DataLoader{
     public void save(ItemEntity itemEntity){
         try {
             dataLoader.insertItem(itemEntity);
-        } catch (Exception e){}
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 
     public List convertData() throws SQLException {

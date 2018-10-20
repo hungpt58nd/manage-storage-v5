@@ -1,7 +1,7 @@
 package com.uet.model;
 
 public class ItemEntity {
-    public int id;
+    public String id;
     public String name;
     public String code;
     public String type;

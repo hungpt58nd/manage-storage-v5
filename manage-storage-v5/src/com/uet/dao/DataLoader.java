@@ -7,6 +7,7 @@ import com.uet.model.StorageEntity;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class DataLoader {
     Connection connection;
@@ -26,7 +27,7 @@ public class DataLoader {
 
         while (rs.next()){
             PersonEntity personEntity = new PersonEntity();
-            personEntity.id = rs.getInt("id");
+            personEntity.id = rs.getString("id");
             personEntity.name = rs.getString("name");
             personEntity.address = rs.getString("address");
             personEntity.total = rs.getInt("total");
@@ -49,13 +50,17 @@ public class DataLoader {
             ((PreparedStatement) st).setString(1, personEntity.name);
             ((PreparedStatement) st).setString(2, personEntity.address);
             ((PreparedStatement) st).setInt(3, personEntity.total);
-            ((PreparedStatement) st).setString(4, personEntity.note);
+            ((PreparedStatement) st).setString(4, personEntity.phone);
+            ((PreparedStatement) st).setString(5, personEntity.note);
+            ((PreparedStatement) st).setString(6, personEntity.id);
             ((PreparedStatement) st).execute();
-        } catch (Exception e){}
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 
     public boolean insertPerson(PersonEntity personEntity, String type) throws SQLException {
-        String sql = "INSERT into person (name, address, total, phone, created_at, note, type) values (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT into person (name, address, total, phone, created_at, note, type, id) values (?, ?, ?, ?, ?, ?, ?, ?)";
         st = connection.prepareStatement(sql);
         ((PreparedStatement) st).setString(1, personEntity.name);
         ((PreparedStatement) st).setString(2, personEntity.address);
@@ -64,6 +69,7 @@ public class DataLoader {
         ((PreparedStatement) st).setString(5, personEntity.createdAt);
         ((PreparedStatement) st).setString(6, personEntity.note);
         ((PreparedStatement) st).setString(7, type);
+        ((PreparedStatement) st).setString(8, UUID.randomUUID().toString());
         return ((PreparedStatement) st).execute();
     }
 
@@ -71,7 +77,7 @@ public class DataLoader {
         try{
             String sql = "delete from person where id = ?";
             st = connection.prepareStatement(sql);
-            ((PreparedStatement) st).setInt(1, personEntity.id);
+            ((PreparedStatement) st).setString(1, personEntity.id);
             ((PreparedStatement) st).execute();
         } catch (Exception e){}
     }
@@ -85,7 +91,7 @@ public class DataLoader {
 
         while (rs.next()){
             StorageEntity storageEntity = new StorageEntity();
-            storageEntity.id = rs.getInt("id");
+            storageEntity.id = rs.getString("id");
             storageEntity.name = rs.getString("name");
             storageEntity.code = rs.getString("code");
             storageEntity.total = rs.getInt("total");
@@ -116,14 +122,14 @@ public class DataLoader {
             ((PreparedStatement) st).setString(7, storageEntity.type);
             ((PreparedStatement) st).setInt(8, storageEntity.quantity);
             ((PreparedStatement) st).setInt(9, storageEntity.price);
-            ((PreparedStatement) st).setInt(10, storageEntity.id);
+            ((PreparedStatement) st).setString(10, storageEntity.id);
 
             ((PreparedStatement) st).execute();
         } catch (Exception e){}
     }
 
     public boolean insertStorage(StorageEntity storageEntity, String type) throws SQLException {
-        String sql = "INSERT into storage (name, code, total, person, created_at, note, type, quantity, price, type_data) values (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT into storage (name, code, total, person, created_at, note, type, quantity, price, type_data, id) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         st = connection.prepareStatement(sql);
         ((PreparedStatement) st).setString(1, storageEntity.name);
         ((PreparedStatement) st).setString(2, storageEntity.code);
@@ -135,6 +141,7 @@ public class DataLoader {
         ((PreparedStatement) st).setInt(8, storageEntity.quantity);
         ((PreparedStatement) st).setInt(9, storageEntity.price);
         ((PreparedStatement) st).setString(10, type);
+        ((PreparedStatement) st).setString(11, UUID.randomUUID().toString());
 
         return ((PreparedStatement) st).execute();
     }
@@ -143,7 +150,7 @@ public class DataLoader {
         try {
             String sql = "delete from storage where id = ?";
             st = connection.prepareStatement(sql);
-            ((PreparedStatement) st).setInt(1, storageEntity.id);
+            ((PreparedStatement) st).setString(1, storageEntity.id);
             ((PreparedStatement) st).execute();
         } catch (Exception e){}
     }
@@ -157,10 +164,10 @@ public class DataLoader {
 
         while (rs.next()){
             ItemEntity itemEntity = new ItemEntity();
-            itemEntity.id = rs.getInt("id");
+            itemEntity.id = rs.getString("id");
             itemEntity.name = rs.getString("name");
             itemEntity.code = rs.getString("code");
-            itemEntity.type = rs.getString("type");
+            itemEntity.type = rs.getString("unit_type");
             itemEntity.provider = rs.getString("provider");
             itemEntity.quantity = rs.getInt("quantity");
             itemEntity.priceImport = rs.getInt("price_import");
@@ -175,7 +182,7 @@ public class DataLoader {
 
     public void updateItem(ItemEntity itemEntity) {
         try {
-            String sql = "UPDATE person set name = ?, code = ?, type = ?, provider = ?, quantity = ?, priceImport = ?, priceExport = ?, note = ? where id = ?";
+            String sql = "UPDATE person set name = ?, code = ?, unit_type = ?,  provider = ?, quantity = ?, price_import = ?, price_export = ?, note = ? where id = ?";
             st = connection.prepareStatement(sql);
             ((PreparedStatement) st).setString(1, itemEntity.name);
             ((PreparedStatement) st).setString(2, itemEntity.code);
@@ -190,7 +197,7 @@ public class DataLoader {
     }
 
     public boolean insertItem(ItemEntity itemEntity) throws SQLException {
-        String sql = "INSERT into item (name, code, type, provider, quantity, priceImport, priceExport, note) values (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT into item (name, code, provider, quantity, price_import, price_export, note, id, unit_type) values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         st = connection.prepareStatement(sql);
         ((PreparedStatement) st).setString(1, itemEntity.name);
         ((PreparedStatement) st).setString(2, itemEntity.code);
@@ -199,6 +206,8 @@ public class DataLoader {
         ((PreparedStatement) st).setInt(5, itemEntity.priceImport);
         ((PreparedStatement) st).setInt(6, itemEntity.priceExport);
         ((PreparedStatement) st).setString(7, itemEntity.note);
+        ((PreparedStatement) st).setString(8, UUID.randomUUID().toString());
+        ((PreparedStatement) st).setString(9, itemEntity.type);
         return ((PreparedStatement) st).execute();
     }
 
@@ -206,7 +215,7 @@ public class DataLoader {
         try {
             String sql = "delete from item where id = ?";
             st = connection.prepareStatement(sql);
-            ((PreparedStatement) st).setInt(1, itemEntity.id);
+            ((PreparedStatement) st).setString(1, itemEntity.id);
             ((PreparedStatement) st).execute();
         }catch (Exception e){}
     }

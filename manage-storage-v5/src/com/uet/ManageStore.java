@@ -300,6 +300,8 @@ public class ManageStore extends javax.swing.JFrame {
 
     private PersonEntity validateProviderMenu(){
         PersonEntity provider = new PersonEntity();
+        if (selectedIndex >= 0)
+            provider.id = providers.get(selectedIndex - 1).id;
         provider.name = nameProviderInput.getText();
         provider.address = addressProviderInput.getText();
         provider.phone = phoneProviderInput.getText();
@@ -309,28 +311,39 @@ public class ManageStore extends javax.swing.JFrame {
         provider.total = 0; // toDo:
 
         if(provider.name.equals("") || provider.address.equals("") || provider.phone.equals("")){
-            JOptionPane.showMessageDialog(null, "Hoàn thành thông tin theo mẫu");
+            JOptionPane.showMessageDialog(null, "Please complete form");
             return null;
         } else {
-            return provider;
+            if (providers.stream().filter(e -> e.name.equals(provider.name)).collect(Collectors.toList()).size() > 0){
+                JOptionPane.showMessageDialog(null, "Provider Name exists !");
+                return null;
+            } else
+                return provider;
         }
     }
 
     private PersonEntity validateCustomerMenu(){
         PersonEntity customer = new PersonEntity();
+        if (selectedIndex >= 0){
+            customer.id = customers.get(selectedIndex - 1).id;
+        }
         customer.name = nameCustomerInput.getText();
         customer.address = addressCustomerInput.getText();
         customer.phone = phoneCustomerInput.getText();
         customer.note = noteCustomerInput.getText();
 
         customer.createdAt = new SimpleDateFormat("yyyy/MM/dd").format(Calendar.getInstance().getTime());
-        customer.total = 0; // toDo:
+        customer.total = 0;
 
         if(customer.name.equals("") || customer.address.equals("") || customer.phone.equals("")){
             JOptionPane.showMessageDialog(null, "Hoàn thành thông tin theo mẫu");
             return null;
         } else {
-            return customer;
+            if (customers.stream().filter(e -> e.name.equals(customer.name)).collect(Collectors.toList()).size() > 0){
+                JOptionPane.showMessageDialog(null, "Customer Name exists !");
+                return null;
+            } else
+                return customer;
         }
     }
 
@@ -338,6 +351,8 @@ public class ManageStore extends javax.swing.JFrame {
         ItemEntity itemEntity = items.stream().filter(e -> e.code.equals(codeImportCb.getSelectedItem().toString())).collect(Collectors.toList()).get(0);
 
         StorageEntity storageEntity = new StorageEntity();
+        if(selectedIndex >= 0)
+            storageEntity.id = imports.get(selectedIndex - 1).id;
         storageEntity.createdAt = new SimpleDateFormat("yyyy/MM/dd").format(Calendar.getInstance().getTime());
         storageEntity.type = itemEntity.type;
         storageEntity.price = itemEntity.priceImport;
@@ -361,6 +376,8 @@ public class ManageStore extends javax.swing.JFrame {
         ItemEntity itemEntity = items.stream().filter(e -> e.code.equals(codeExportCb.getSelectedItem().toString())).collect(Collectors.toList()).get(0);
 
         StorageEntity storageEntity = new StorageEntity();
+        if(selectedIndex >= 0)
+            storageEntity.id = exports.get(selectedIndex - 1).id;
         storageEntity.createdAt = new SimpleDateFormat("yyyy/MM/dd").format(Calendar.getInstance().getTime());
         storageEntity.type = itemEntity.type;
         storageEntity.price = itemEntity.priceImport;
@@ -385,30 +402,38 @@ public class ManageStore extends javax.swing.JFrame {
 
     private ItemEntity validateManageMenu(boolean isEdit){
         ItemEntity itemEntity = new ItemEntity();
+        if (selectedIndex >= 0)
+            itemEntity.id = items.get(selectedIndex - 1).id;
         itemEntity.name = nameManageInput.getText();
         itemEntity.code = codeManageInput.getText();
         itemEntity.note = priceExportManageInput.getText();
         itemEntity.quantity = 0;
 
-        try{
+        try {
             itemEntity.type = typeManageCb.getSelectedItem().toString();
             itemEntity.provider = providerManageCb.getSelectedItem().toString();
+        } catch (Exception e){
+            JOptionPane.showMessageDialog(null, "Please select a provider");
+            return null;
+        }
+
+        try{
             itemEntity.priceImport = Integer.parseInt(priceImportManageInput.getText());
             itemEntity.priceExport = Integer.parseInt(priceExportManageInput.getText());
 
             if (itemEntity.name.equals("") || itemEntity.code.equals("") || itemEntity.provider == null){
-                JOptionPane.showMessageDialog(null, "Hoàn thành thông tin sản phẩm");
+                JOptionPane.showMessageDialog(null, "Please complete form");
                 return null;
             } else {
                 if (!isEdit && items.stream().filter(e -> e.code.equals(itemEntity.code)).collect(Collectors.toList()).size() > 0) {
-                    JOptionPane.showMessageDialog(null, "Mã sản phẩm đã tồn tại");
+                    JOptionPane.showMessageDialog(null, "Item code exists");
                     return null;
                 } else {
                     return itemEntity;
                 }
             }
         } catch (Exception e){
-            JOptionPane.showMessageDialog(null, "Thông tin trên mẫu thiếu");
+            JOptionPane.showMessageDialog(null, "Number is required for import price and export price");
         }
 
         return null;
@@ -708,7 +733,7 @@ public class ManageStore extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE))
         );
 
-        jLabel8.setText("Tên sản phẩm");
+        jLabel8.setText("Item Name");
 
         jLabel9.setText("Item Code");
 
@@ -1644,7 +1669,7 @@ public class ManageStore extends javax.swing.JFrame {
 
     private void deleteManageBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteManageBtnActionPerformed
         if (selectedIndex == -1){
-            JOptionPane.showMessageDialog(null, "Hãy chọn một hàng trong bảng");
+            JOptionPane.showMessageDialog(null, "Please select one row in table");
         } else {
             itemService.deleteItem(items.get(selectedIndex - 1));
             items.remove(selectedIndex - 1);

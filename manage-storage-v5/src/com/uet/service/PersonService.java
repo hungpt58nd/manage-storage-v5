@@ -8,7 +8,6 @@ package com.uet.service;
 import com.uet.dao.DataLoader;
 import com.uet.model.PersonEntity;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +28,9 @@ public class PersonService extends DataLoader {
     public void save(PersonEntity personEntity){
         try {
             dataLoader.insertPerson(personEntity, type);
-        } catch (Exception e){}
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 
     public List convertData() throws SQLException {

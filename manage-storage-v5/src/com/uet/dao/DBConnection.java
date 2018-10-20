@@ -4,13 +4,19 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class DBConnection {
-    private String username = "p4x";
-    private String password = "Pyxis4All@";
+    private String username = "STORM";
+    private String password = "671999";
+
+    private static String DB_URL = "jdbc:sqlserver://localhost:1433;"
+            + "databaseName=manage;"
+            + "integratedSecurity=true;user=sa;password=root";
+
 
     public Connection createConnection(){
         Connection connection = null;
         try{
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/manage-storage?autoReconnect=true&useSSL=false",username,password);
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            connection = DriverManager.getConnection(DB_URL);
         } catch (Exception e){
             System.out.println("Connection error");
         }
