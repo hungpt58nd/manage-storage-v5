@@ -510,21 +510,21 @@ public class ManageStore extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        manageMenuBtn.setText("Quản lí vật tư");
+        manageMenuBtn.setText("Manage Item");
         manageMenuBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 manageMenuBtnAction(evt);
             }
         });
 
-        importMenuBtn.setText("Nhập kho");
+        importMenuBtn.setText("Import");
         importMenuBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 importMenuBtnAction(evt);
             }
         });
 
-        exportMenuBtn.setText("Xuất kho");
+        exportMenuBtn.setText("Export");
         exportMenuBtn.setToolTipText("");
         exportMenuBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -532,21 +532,21 @@ public class ManageStore extends javax.swing.JFrame {
             }
         });
 
-        customerMenuBtn.setText("Khách hàng");
+        customerMenuBtn.setText("Customer");
         customerMenuBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 customerMenuBtnAction(evt);
             }
         });
 
-        providerMenuBtn.setText("Nhà cung cấp");
+        providerMenuBtn.setText("Provider");
         providerMenuBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 providerMenuBtnAction(evt);
             }
         });
 
-        statisticMenuBtn.setText("Thống kê");
+        statisticMenuBtn.setText("Statistic");
         statisticMenuBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 statisticMenuBtnAction(evt);
@@ -559,39 +559,39 @@ public class ManageStore extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText("Tên sản phẩm");
+        jLabel1.setText("Item Name");
 
-        jLabel2.setText("Mã sản phẩm");
+        jLabel2.setText("Item Code");
 
-        typeManageCb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {"Cái", "Hộp", "Kg"}));
+        typeManageCb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {"Pcs", "Set", "Kg"}));
 
-        jLabel3.setText("Đơn vị");
+        jLabel3.setText("Unit Type");
 
         providerManageCb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { }));
 
-        jLabel4.setText("Nhà cung cấp");
+        jLabel4.setText("Provider");
 
-        jLabel5.setText("Giá nhập");
+        jLabel5.setText("Import Price");
 
-        jLabel6.setText("Giá xuất");
+        jLabel6.setText("Export Price");
 
-        jLabel7.setText("Ghi chú");
+        jLabel7.setText("Note");
 
-        addManageBtn.setText("Thêm");
+        addManageBtn.setText("Add");
         addManageBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addManageBtnActionPerformed(evt);
             }
         });
 
-        editManageBtn.setText("Sửa");
+        editManageBtn.setText("Edit");
         editManageBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editManageBtnActionPerformed(evt);
             }
         });
 
-        deleteManageBtn.setText("Xóa");
+        deleteManageBtn.setText("Delete");
         deleteManageBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 deleteManageBtnActionPerformed(evt);
@@ -606,7 +606,7 @@ public class ManageStore extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "STT", "Tên sản phẩm", "Mã sản phẩm", "Đơn vị", "Nhà cung cấp", "Số lượng", "Giá nhập", "Giá xuất", "Ghi chú"
+                "Index", "Item Name", "Item Code", "Unit Type", "Provider", "Quantity", "Import price", "Export price", "Note"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -664,7 +664,7 @@ public class ManageStore extends javax.swing.JFrame {
                         .addGroup(manageMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(manageMenuLayout.createSequentialGroup()
                                 .addComponent(jLabel7)
-                                .addContainerGap(156, Short.MAX_VALUE))
+                                .addContainerGap(172, Short.MAX_VALUE))
                             .addComponent(noteManageInput)))
                     .addGroup(manageMenuLayout.createSequentialGroup()
                         .addGap(29, 29, 29)
@@ -706,25 +706,25 @@ public class ManageStore extends javax.swing.JFrame {
 
         jLabel8.setText("Tên sản phẩm");
 
-        jLabel9.setText("Mã sản phẩm");
+        jLabel9.setText("Item Code");
 
-        jLabel12.setText("Số lượng");
+        jLabel12.setText("Quantity");
 
-        addImportBtn.setText("Thêm");
+        addImportBtn.setText("Add");
         addImportBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addImportBtnActionPerformed(evt);
             }
         });
 
-        editImportBtn.setText("Sửa");
+        editImportBtn.setText("Edit");
         editImportBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editImportBtnActionPerformed(evt);
             }
         });
 
-        deleteImportBtn.setText("Xóa");
+        deleteImportBtn.setText("Delete");
         deleteImportBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 deleteImportBtnActionPerformed(evt);
@@ -739,7 +739,7 @@ public class ManageStore extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "STT", "Tên sản phẩm", "Mã sản phẩm", "Đơn vị", "Nhà cung cấp", "Số lượng", "Đơn giá", "Tổng tiền", "Ngày nhập"
+                "Index", "Item Name", "Item Code", "Unit Type", "Provider", "Quantity", "Price", "Total", "Created Day"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -778,7 +778,7 @@ public class ManageStore extends javax.swing.JFrame {
 
         providerImportCb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {}));
 
-        jLabel10.setText("Nhà cung cấp");
+        jLabel10.setText("Provider");
 
         javax.swing.GroupLayout importMenuLayout = new javax.swing.GroupLayout(importMenu);
         importMenu.setLayout(importMenuLayout);
@@ -838,27 +838,27 @@ public class ManageStore extends javax.swing.JFrame {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 457, Short.MAX_VALUE))
         );
 
-        jLabel11.setText("Tên sản phẩm");
+        jLabel11.setText("Item Name");
 
-        jLabel13.setText("Mã sản phẩm");
+        jLabel13.setText("Item Code");
 
-        jLabel14.setText("Số lượng");
+        jLabel14.setText("Quantity");
 
-        addExportBtn.setText("Thêm");
+        addExportBtn.setText("Add");
         addExportBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addExportBtnActionPerformed(evt);
             }
         });
 
-        editExportBtn.setText("Sửa");
+        editExportBtn.setText("Edit");
         editExportBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editExportBtnActionPerformed(evt);
             }
         });
 
-        deleteManageBtn2.setText("Xóa");
+        deleteManageBtn2.setText("Delete");
         deleteManageBtn2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 deleteManageBtn2ActionPerformed(evt);
@@ -873,7 +873,7 @@ public class ManageStore extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "STT", "Tên sản phẩm", "Mã sản phẩm", "Đơn vị", "Khách hàng", "Số lượng", "Giá nhập", "Giá xuất", "Ghi chú"
+                "Index", "Item Name", "Item Code", "Unit Type", "Customer", "Quantity", "Import Price", "Export Price", "Note"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -912,7 +912,7 @@ public class ManageStore extends javax.swing.JFrame {
 
         providerExportCb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { }));
 
-        jLabel15.setText("Khách hàng");
+        jLabel15.setText("Customer");
 
         javax.swing.GroupLayout exportMenuLayout = new javax.swing.GroupLayout(exportMenu);
         exportMenu.setLayout(exportMenuLayout);
@@ -924,10 +924,9 @@ public class ManageStore extends javax.swing.JFrame {
                     .addGroup(exportMenuLayout.createSequentialGroup()
                         .addGap(141, 141, 141)
                         .addGroup(exportMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, exportMenuLayout.createSequentialGroup()
-                                .addComponent(jLabel11)
-                                .addGap(143, 143, 143))
-                            .addComponent(nameExportCb1, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(nameExportCb1, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
                         .addGroup(exportMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel13)
                             .addComponent(codeExportCb, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -972,29 +971,29 @@ public class ManageStore extends javax.swing.JFrame {
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE))
         );
 
-        jLabel16.setText("Tên khách hàng");
+        jLabel16.setText("Customer Name");
 
-        jLabel17.setText("Địa chỉ");
+        jLabel17.setText("Address");
 
-        jLabel18.setText("Điện thoại");
+        jLabel18.setText("Phone");
 
-        jLabel22.setText("Ghi chú");
+        jLabel22.setText("Note");
 
-        addCustomerBtn.setText("Thêm");
+        addCustomerBtn.setText("Add");
         addCustomerBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addCustomerBtnActionPerformed(evt);
             }
         });
 
-        editCustomerBtn.setText("Sửa");
+        editCustomerBtn.setText("Edit");
         editCustomerBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editCustomerBtnActionPerformed(evt);
             }
         });
 
-        deleteCustomerBtn.setText("Xóa");
+        deleteCustomerBtn.setText("Delete");
         deleteCustomerBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 deleteCustomerBtnActionPerformed(evt);
@@ -1009,7 +1008,7 @@ public class ManageStore extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null}
             },
             new String [] {
-                "STT", "Tên khách hàng", "Địa chỉ", "Số điện thoại", "Ngày tạo", "Tổng tiền", "Ghi chú"
+                "Index", "Customer Name", "Address", "Phone", "Created Day", "Total", "Note"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -1078,29 +1077,29 @@ public class ManageStore extends javax.swing.JFrame {
                 .addComponent(customerScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE))
         );
 
-        jLabel19.setText("Tên nhà cung cấp");
+        jLabel19.setText("Provider Name");
 
-        jLabel20.setText("Địa chỉ");
+        jLabel20.setText("Address");
 
-        jLabel21.setText("Điện thoại");
+        jLabel21.setText("Phone");
 
-        jLabel23.setText("Ghi chú");
+        jLabel23.setText("Note");
 
-        addProviderBtn.setText("Thêm");
+        addProviderBtn.setText("Add");
         addProviderBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addProviderBtnActionPerformed(evt);
             }
         });
 
-        editProviderBtn.setText("Sửa");
+        editProviderBtn.setText("Edit");
         editProviderBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editProviderBtnActionPerformed(evt);
             }
         });
 
-        deleteProviderBtn.setText("Xóa");
+        deleteProviderBtn.setText("Delete");
         deleteProviderBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 deleteProviderBtnActionPerformed(evt);
@@ -1115,7 +1114,7 @@ public class ManageStore extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null}
             },
             new String [] {
-                "STT", "Tên nhà cung cấp", "Địa chỉ", "Số điện thoại", "Ngày tạo", "Tổng tiền", "Ghi chú"
+                "Index", "Provider Name", "Address", "Phone", "Created Day", "Total", "Note"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -1184,14 +1183,14 @@ public class ManageStore extends javax.swing.JFrame {
                 .addComponent(providerScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE))
         );
 
-        exportStatisticBtn.setText("Thống kê xuất hàng");
+        exportStatisticBtn.setText("Export Statictis");
         exportStatisticBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 exportStatisticBtnActionPerformed(evt);
             }
         });
 
-        importStatisticBtn.setText("Thống kê nhập hàng");
+        importStatisticBtn.setText("Import Statictis");
         importStatisticBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 importStatisticBtnActionPerformed(evt);
@@ -1206,7 +1205,7 @@ public class ManageStore extends javax.swing.JFrame {
                 {null, null, null, null, null}
             },
             new String [] {
-                "STT", "Tên", "Mã hàng", "Số lượng", "Tổng tiền"
+                "Index", "Item Name", "Item Code", "Quantity", "Total"
             }
         ) {
             boolean[] canEdit = new boolean [] {
