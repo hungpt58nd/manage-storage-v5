@@ -358,15 +358,21 @@ public class ManageStore extends javax.swing.JFrame {
         storageEntity.price = itemEntity.priceImport;
 
         try {
+            storageEntity.quantity = Integer.parseInt(quantityImportInput.getText());
+        } catch (Exception e){
+            JOptionPane.showMessageDialog(null, "Number is required for quantity");
+            return null;
+        }
+
+        try {
             storageEntity.name = nameImportCb.getSelectedItem().toString();
             storageEntity.code = codeImportCb.getSelectedItem().toString();
             storageEntity.person = providerImportCb.getSelectedItem().toString();
-            storageEntity.quantity = Integer.parseInt(quantityImportInput.getText());
             storageEntity.total = storageEntity.quantity * storageEntity.price;
 
             return storageEntity;
         } catch (Exception e){
-            JOptionPane.showMessageDialog(null, "Thông tin trên mẫu thiếu");
+            JOptionPane.showMessageDialog(null, "Please complete form");
         }
 
         return null;
@@ -383,18 +389,24 @@ public class ManageStore extends javax.swing.JFrame {
         storageEntity.price = itemEntity.priceImport;
 
         try {
+            storageEntity.quantity = Integer.parseInt(quantityExportInput.getText());
+        } catch (Exception e){
+            JOptionPane.showMessageDialog(null, "Number is required for quantity");
+            return null;
+        }
+
+        try {
             storageEntity.name = nameExportCb1.getSelectedItem().toString();
             storageEntity.code = codeExportCb.getSelectedItem().toString();
             storageEntity.person = providerExportCb.getSelectedItem().toString();
-            storageEntity.quantity = Integer.parseInt(quantityExportInput.getText());
             if (storageEntity.quantity > itemEntity.quantity){
-                JOptionPane.showMessageDialog(null, "Vượt quá số lượng cho phép");
+                JOptionPane.showMessageDialog(null, "Over max item in storage");
             } else {
                 storageEntity.total = storageEntity.quantity * storageEntity.price;
                 return storageEntity;
             }
         } catch (Exception e){
-            JOptionPane.showMessageDialog(null, "Thông tin trên mẫu thiếu");
+            JOptionPane.showMessageDialog(null, "Please complete form");
         }
 
         return null;
@@ -819,10 +831,9 @@ public class ManageStore extends javax.swing.JFrame {
                     .addGroup(importMenuLayout.createSequentialGroup()
                         .addGap(141, 141, 141)
                         .addGroup(importMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, importMenuLayout.createSequentialGroup()
-                                .addComponent(jLabel8)
-                                .addGap(143, 143, 143))
-                            .addComponent(nameImportCb, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(nameImportCb, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
                         .addGroup(importMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel9)
                             .addComponent(codeImportCb, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1417,7 +1428,7 @@ public class ManageStore extends javax.swing.JFrame {
 
     private void editCustomerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editCustomerBtnActionPerformed
         if (selectedIndex == -1){
-            JOptionPane.showMessageDialog(null, "Hãy chọn một hàng trong bảng");
+            JOptionPane.showMessageDialog(null, "Please select one row in table");
         } else {
             PersonEntity customer = validateCustomerMenu();
             if (customer != null){
@@ -1433,7 +1444,7 @@ public class ManageStore extends javax.swing.JFrame {
 
     private void deleteCustomerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteCustomerBtnActionPerformed
         if (selectedIndex == -1){
-            JOptionPane.showMessageDialog(null, "Hãy chọn một hàng trong bảng");
+            JOptionPane.showMessageDialog(null, "Please select one row in table");
         } else {
             customerService.deletePerson(customers.get(selectedIndex - 1));
             customers.remove(selectedIndex - 1);
@@ -1455,7 +1466,7 @@ public class ManageStore extends javax.swing.JFrame {
 
     private void editProviderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editProviderBtnActionPerformed
         if (selectedIndex == -1){
-            JOptionPane.showMessageDialog(null, "Hãy chọn một hàng trong bảng");
+            JOptionPane.showMessageDialog(null, "Please select one row in table");
         } else {
             PersonEntity provider = validateProviderMenu();
             if (provider != null){
@@ -1471,7 +1482,7 @@ public class ManageStore extends javax.swing.JFrame {
 
     private void deleteProviderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteProviderBtnActionPerformed
         if (selectedIndex == -1){
-            JOptionPane.showMessageDialog(null, "Hãy chọn một hàng trong bảng");
+            JOptionPane.showMessageDialog(null, "Please select one row in table");
         } else {
             providerService.deletePerson(providers.get(selectedIndex - 1));
             providers.remove(selectedIndex - 1);
@@ -1515,7 +1526,7 @@ public class ManageStore extends javax.swing.JFrame {
 
     private void editImportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editImportBtnActionPerformed
         if (selectedIndex == -1){
-            JOptionPane.showMessageDialog(null, "Hãy chọn một hàng trong bảng");
+            JOptionPane.showMessageDialog(null, "Please select one row in table");
         } else {
             StorageEntity storageEntity = validateImportMenu();
             if (storageEntity != null){
@@ -1531,7 +1542,7 @@ public class ManageStore extends javax.swing.JFrame {
 
     private void deleteImportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteImportBtnActionPerformed
         if (selectedIndex == -1){
-            JOptionPane.showMessageDialog(null, "Hãy chọn một hàng trong bảng");
+            JOptionPane.showMessageDialog(null, "Please select one row in table");
         } else {
             importService.deleteStorage(imports.get(selectedIndex - 1));
             imports.remove(selectedIndex - 1);
@@ -1565,7 +1576,7 @@ public class ManageStore extends javax.swing.JFrame {
 
     private void editExportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editExportBtnActionPerformed
         if (selectedIndex == -1){
-            JOptionPane.showMessageDialog(null, "Hãy chọn một hàng trong bảng");
+            JOptionPane.showMessageDialog(null, "Please select one row in table");
         } else {
             StorageEntity storageEntity = validateExportMenu();
             if (storageEntity != null){
@@ -1581,7 +1592,7 @@ public class ManageStore extends javax.swing.JFrame {
 
     private void deleteManageBtn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteManageBtn2ActionPerformed
         if (selectedIndex == -1){
-            JOptionPane.showMessageDialog(null, "Hãy chọn một hàng trong bảng");
+            JOptionPane.showMessageDialog(null, "Please select one row in table");
         } else {
             exportService.deleteStorage(exports.get(selectedIndex - 1));
             exports.remove(selectedIndex - 1);
@@ -1653,7 +1664,7 @@ public class ManageStore extends javax.swing.JFrame {
 
     private void editManageBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editManageBtnActionPerformed
         if (selectedIndex == -1){
-            JOptionPane.showMessageDialog(null, "Hãy chọn một hàng trong bảng");
+            JOptionPane.showMessageDialog(null, "Please select one row in table");
         } else {
             ItemEntity itemEntity = validateManageMenu(true);
             if (itemEntity != null){

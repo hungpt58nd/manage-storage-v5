@@ -20,7 +20,9 @@ public class StorageService extends DataLoader {
   public void save(StorageEntity storageEntity){
     try {
       dataLoader.insertStorage(storageEntity, type);
-    } catch (Exception e){}
+    } catch (Exception e){
+      System.out.println(e.getMessage());
+    }
   }
 
   public List convertData() throws SQLException {

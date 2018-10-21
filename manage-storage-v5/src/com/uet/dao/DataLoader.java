@@ -102,7 +102,7 @@ public class DataLoader {
             storageEntity.quantity = rs.getInt("quantity");
             storageEntity.price = rs.getInt("price");
 
-            if (rs.getString("type_data").equals(type))
+            if (rs.getString("type_data").trim().equals(type))
                 storageEntities.add(storageEntity);
         }
 
@@ -111,7 +111,7 @@ public class DataLoader {
 
     public void updateStorage(StorageEntity storageEntity) {
         try {
-            String sql = "UPDATE storage set name = ?, code = ?, total = ?, person = ?, create_at = ?, note = ?, type = ?, quantity = ?, price = ? where id = ?";
+            String sql = "UPDATE storage set name = ?, code = ?, total = ?, person = ?, created_at = ?, note = ?, type = ?, quantity = ?, price = ? where id = ?";
             st = connection.prepareStatement(sql);
             ((PreparedStatement) st).setString(1, storageEntity.name);
             ((PreparedStatement) st).setString(2, storageEntity.code);
@@ -125,7 +125,9 @@ public class DataLoader {
             ((PreparedStatement) st).setString(10, storageEntity.id);
 
             ((PreparedStatement) st).execute();
-        } catch (Exception e){}
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 
     public boolean insertStorage(StorageEntity storageEntity, String type) throws SQLException {
@@ -182,7 +184,7 @@ public class DataLoader {
 
     public void updateItem(ItemEntity itemEntity) {
         try {
-            String sql = "UPDATE person set name = ?, code = ?, unit_type = ?,  provider = ?, quantity = ?, price_import = ?, price_export = ?, note = ? where id = ?";
+            String sql = "UPDATE item set name = ?, code = ?, unit_type = ?,  provider = ?, quantity = ?, price_import = ?, price_export = ?, note = ? where id = ?";
             st = connection.prepareStatement(sql);
             ((PreparedStatement) st).setString(1, itemEntity.name);
             ((PreparedStatement) st).setString(2, itemEntity.code);
@@ -191,9 +193,12 @@ public class DataLoader {
             ((PreparedStatement) st).setInt(5, itemEntity.quantity);
             ((PreparedStatement) st).setInt(6, itemEntity.priceImport);
             ((PreparedStatement) st).setInt(7, itemEntity.priceExport);
-            ((PreparedStatement) st).setString(7, itemEntity.note);
+            ((PreparedStatement) st).setString(8, itemEntity.note);
+            ((PreparedStatement) st).setString(9, itemEntity.id);
             ((PreparedStatement) st).execute();
-        } catch (Exception e){}
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 
     public boolean insertItem(ItemEntity itemEntity) throws SQLException {
