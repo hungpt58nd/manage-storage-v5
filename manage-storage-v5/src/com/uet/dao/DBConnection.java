@@ -4,8 +4,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class DBConnection {
-    private String username = "STORM";
-    private String password = "671999";
 
     private static String DB_URL = "jdbc:sqlserver://localhost:1433;"
             + "databaseName=manage;"

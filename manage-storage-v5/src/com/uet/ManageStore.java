@@ -12,7 +12,6 @@ import com.uet.model.StorageEntity;
 import com.uet.service.ItemService;
 import com.uet.service.PersonService;
 import com.uet.service.StorageService;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -173,6 +172,7 @@ public class ManageStore extends javax.swing.JFrame {
     }
     
     private void renderImportTable(){
+        selectedIndex = -1;
         flagImport = true;
         nameImportCb.removeAllItems();
         codeImportCb.removeAllItems();
@@ -204,6 +204,7 @@ public class ManageStore extends javax.swing.JFrame {
     }
 
     private void renderExportTable(){
+        selectedIndex = -1;
         flagExport = true;
         nameExportCb1.removeAllItems();
         codeExportCb.removeAllItems();
@@ -235,6 +236,7 @@ public class ManageStore extends javax.swing.JFrame {
     }
 
     private void renderCustomerTable(){
+        selectedIndex = -1;
         removeRowInTable(customerTable);
         for(int i = 0; i < customers.size(); i++){
             ((DefaultTableModel)this.customerTable.getModel()).addRow(personObj[i]);
@@ -244,6 +246,7 @@ public class ManageStore extends javax.swing.JFrame {
     }
 
     private void renderProviderTable(){
+        selectedIndex = -1;
         removeRowInTable(providerTable);
         for(int i = 0; i < providers.size(); i++){
             ((DefaultTableModel)this.providerTable.getModel()).addRow(personObj[i]);
@@ -253,6 +256,7 @@ public class ManageStore extends javax.swing.JFrame {
     }
 
     private void renderStatisticTable(List<StorageEntity> dataList){
+        selectedIndex = -1;
         statistics = new ArrayList<>();
         List<String> codeList = dataList.stream().map(e -> e.code).distinct().collect(Collectors.toList());
         for(String code: codeList){
@@ -282,10 +286,11 @@ public class ManageStore extends javax.swing.JFrame {
     }
 
     private void renderManageTable(){
+        selectedIndex = -1;
         providerManageCb.removeAllItems();
         if(providers.size() > 0){
             for(int i = 0; i < providers.size(); i++){
-                providerManageCb.addItem(providers.get(0).name);
+                providerManageCb.addItem(providers.get(i).name);
             }
         }
 
@@ -314,11 +319,7 @@ public class ManageStore extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Please complete form");
             return null;
         } else {
-            if (providers.stream().filter(e -> e.name.equals(provider.name)).collect(Collectors.toList()).size() > 0){
-                JOptionPane.showMessageDialog(null, "Provider Name exists !");
-                return null;
-            } else
-                return provider;
+            return provider;
         }
     }
 
@@ -336,14 +337,10 @@ public class ManageStore extends javax.swing.JFrame {
         customer.total = 0;
 
         if(customer.name.equals("") || customer.address.equals("") || customer.phone.equals("")){
-            JOptionPane.showMessageDialog(null, "Hoàn thành thông tin theo mẫu");
+            JOptionPane.showMessageDialog(null, "Please complete form");
             return null;
         } else {
-            if (customers.stream().filter(e -> e.name.equals(customer.name)).collect(Collectors.toList()).size() > 0){
-                JOptionPane.showMessageDialog(null, "Customer Name exists !");
-                return null;
-            } else
-                return customer;
+            return customer;
         }
     }
 
@@ -1418,7 +1415,12 @@ public class ManageStore extends javax.swing.JFrame {
 
     private void addCustomerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addCustomerBtnActionPerformed
         PersonEntity customer = validateCustomerMenu();
+
         if(customer != null) {
+            if (customers.stream().filter(e -> e.name.equals(customer.name)).collect(Collectors.toList()).size() > 0){
+                JOptionPane.showMessageDialog(null, "Customer Name exists !");
+                return ;
+            }
             customers.add(customer);
             customerService.save(customer);
 
@@ -1456,7 +1458,13 @@ public class ManageStore extends javax.swing.JFrame {
 
     private void addProviderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addProviderBtnActionPerformed
         PersonEntity provider = validateProviderMenu();
+
         if(provider != null) {
+            if (providers.stream().filter(e -> e.name.equals(provider.name)).collect(Collectors.toList()).size() > 0){
+                JOptionPane.showMessageDialog(null, "Provider Name exists !");
+                return ;
+            }
+
             providers.add(provider);
             providerService.save(provider);
 
