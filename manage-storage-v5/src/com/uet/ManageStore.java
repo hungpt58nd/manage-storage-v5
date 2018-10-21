@@ -406,7 +406,7 @@ public class ManageStore extends javax.swing.JFrame {
             itemEntity.id = items.get(selectedIndex - 1).id;
         itemEntity.name = nameManageInput.getText();
         itemEntity.code = codeManageInput.getText();
-        itemEntity.note = priceExportManageInput.getText();
+        itemEntity.note = noteManageInput.getText();
         itemEntity.quantity = 0;
 
         try {
