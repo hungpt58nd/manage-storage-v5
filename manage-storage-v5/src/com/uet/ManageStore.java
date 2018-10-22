@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -92,10 +93,13 @@ public class ManageStore extends javax.swing.JFrame {
         });
     }
 
+    private int previousQuantity = 0;
+
     private void selectedImportRow(){
         importTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
             public void valueChanged(ListSelectionEvent event) {
                 try{
+                    previousQuantity = Integer.parseInt(importTable.getValueAt(importTable.getSelectedRow(), 5).toString());
                     selectedIndex = Integer.parseInt(importTable.getValueAt(importTable.getSelectedRow(), 0).toString());
                     nameImportCb.setSelectedItem(importTable.getValueAt(importTable.getSelectedRow(), 1).toString());
                     codeImportCb.setSelectedItem(importTable.getValueAt(importTable.getSelectedRow(), 2).toString());
@@ -112,6 +116,7 @@ public class ManageStore extends javax.swing.JFrame {
         importTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
             public void valueChanged(ListSelectionEvent event) {
                 try{
+                    previousQuantity = Integer.parseInt(importTable1.getValueAt(importTable1.getSelectedRow(), 5).toString());
                     selectedIndex = Integer.parseInt(importTable1.getValueAt(importTable1.getSelectedRow(), 0).toString());
                     nameExportCb1.setSelectedItem(importTable1.getValueAt(importTable1.getSelectedRow(), 1).toString());
                     codeExportCb.setSelectedItem(importTable1.getValueAt(importTable1.getSelectedRow(), 2).toString());
@@ -367,6 +372,15 @@ public class ManageStore extends javax.swing.JFrame {
             storageEntity.person = providerImportCb.getSelectedItem().toString();
             storageEntity.total = storageEntity.quantity * storageEntity.price;
 
+            Optional<StorageEntity> op = imports.stream().filter(e -> e.code.equals(storageEntity.code)).findFirst();
+            if(op.isPresent()){
+                StorageEntity oldEntity = op.get();
+                if(!storageEntity.person.equals(oldEntity.person)) {
+                    JOptionPane.showMessageDialog(null, "You can edit provider");
+                    return null;
+                }
+            }
+
             return storageEntity;
         } catch (Exception e){
             JOptionPane.showMessageDialog(null, "Please complete form");
@@ -401,6 +415,15 @@ public class ManageStore extends javax.swing.JFrame {
             } else {
                 storageEntity.total = storageEntity.quantity * storageEntity.price;
                 return storageEntity;
+            }
+
+            Optional<StorageEntity> op = exports.stream().filter(e -> e.code.equals(storageEntity.code)).findFirst();
+            if(op.isPresent()){
+                StorageEntity oldEntity = op.get();
+                if(!storageEntity.person.equals(oldEntity.person)) {
+                    JOptionPane.showMessageDialog(null, "You can edit provider");
+                    return null;
+                }
             }
         } catch (Exception e){
             JOptionPane.showMessageDialog(null, "Please complete form");
@@ -1541,6 +1564,33 @@ public class ManageStore extends javax.swing.JFrame {
                 imports.set(selectedIndex - 1, storageEntity);
                 importService.updateStorage(storageEntity);
 
+                imports.stream().
+//                int diffQuantity = 0;
+//                if(this.previousQuantity > storageEntity.quantity){
+//                    diffQuantity = (this.previousQuantity - storageEntity.quantity) * (-1);
+//                } else {
+//                    diffQuantity = (storageEntity.quantity - this.previousQuantity);
+//                }
+//                if (this.previousQuantity == storageEntity.quantity) {
+//                    diffQuantity = this.previousQuantity;
+//                }
+//                int diffPrice = diffQuantity * storageEntity.price;
+//
+//                PersonEntity personEntity = providers.stream().filter(e -> e.name.equals(storageEntity.person)).findFirst().get();
+//                int index = providers.indexOf(personEntity);
+//                personEntity.total += diffPrice;
+//                providers.set(index, personEntity);
+//                providerService.updatePerson(personEntity);
+//
+//                ItemEntity itemEntity = items.stream().filter(e -> e.name.equals(storageEntity.name) && e.code.equals(storageEntity.code)).findFirst().get();
+//                index = items.indexOf(itemEntity);
+//                itemEntity.quantity += diffQuantity;
+//                if(itemEntity.quantity < 0)
+//                    itemEntity.quantity = 0;
+//
+//                items.set(index, itemEntity);
+//                itemService.updateItem(itemEntity);
+
                 storageObj = importService.generateStoreObject(imports);
                 renderImportTable();
             }
@@ -1590,6 +1640,32 @@ public class ManageStore extends javax.swing.JFrame {
             if (storageEntity != null){
                 exports.set(selectedIndex - 1, storageEntity);
                 exportService.updateStorage(storageEntity);
+
+                int diffQuantity = 0;
+                if(this.previousQuantity > storageEntity.quantity){
+                    diffQuantity = (this.previousQuantity - storageEntity.quantity) * (-1);
+                } else {
+                    diffQuantity = (storageEntity.quantity - this.previousQuantity);
+                }
+                if (this.previousQuantity == storageEntity.quantity) {
+                    diffQuantity = this.previousQuantity;
+                }
+                int diffPrice = diffQuantity * storageEntity.price;
+
+                PersonEntity personEntity = customers.stream().filter(e -> e.name.equals(storageEntity.person)).findFirst().get();
+                int index = customers.indexOf(personEntity);
+                personEntity.total += diffPrice;
+                if (personEntity.total < 0){
+                    personEntity.total = 0;
+                }
+                customers.set(index, personEntity);
+                customerService.updatePerson(personEntity);
+
+                ItemEntity itemEntity = items.stream().filter(e -> e.name.equals(storageEntity.name) && e.code.equals(storageEntity.code)).findFirst().get();
+                index = items.indexOf(itemEntity);
+                itemEntity.quantity -= diffQuantity;
+                items.set(index, itemEntity);
+                itemService.updateItem(itemEntity);
 
                 storageObj = exportService.generateStoreObject(exports);
                 renderExportTable();
