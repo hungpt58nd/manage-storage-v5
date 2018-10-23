@@ -77,6 +77,50 @@ public class ManageStore extends javax.swing.JFrame {
         renderManageTable();
     }
 
+    private void updateItems(String type){
+        if(type.equals("export")){
+            for(int i = 0; i < customers.size(); i++){
+                int total = 0;
+                for(int j = 0; j < imports.size(); j ++){
+                    if (customers.get(i).name.equals(imports.get(j).person)){
+                        total += imports.get(i).total;
+                    }
+                }
+                customers.get(i).total = total;
+            }
+        } else {
+            for(int i = 0; i < providers.size(); i++){
+                int total = 0;
+                for(int j = 0; j < exports.size(); j ++){
+                    if (providers.get(i).name.equals(exports.get(j).person)){
+                        total += exports.get(i).total;
+                    }
+                }
+                providers.get(i).total = total;
+            }
+        }
+
+        for(int i = 0; i < items.size(); i++){
+            int quantity = 0;
+            for(int j = 0; j < imports.size(); j++){
+                if(imports.get(j).code.equals(items.get(i).code)){
+                    quantity += imports.get(j).quantity;
+                }
+            }
+
+            for(int j = 0; j < exports.size(); j++){
+                if(exports.get(j).code.equals(items.get(i).code)){
+                    quantity -= exports.get(j).quantity;
+                }
+            }
+            items.get(i).quantity = quantity;
+        }
+
+        customers.stream().forEach(customer -> customerService.updatePerson(customer));
+        providers.stream().forEach(provider -> providerService.updatePerson(provider));
+        items.stream().forEach(item -> itemService.updateItem(item));
+    }
+
     private void selectedCustomerRow(){
         customerTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
             public void valueChanged(ListSelectionEvent event) {
@@ -1564,32 +1608,7 @@ public class ManageStore extends javax.swing.JFrame {
                 imports.set(selectedIndex - 1, storageEntity);
                 importService.updateStorage(storageEntity);
 
-                imports.stream().
-//                int diffQuantity = 0;
-//                if(this.previousQuantity > storageEntity.quantity){
-//                    diffQuantity = (this.previousQuantity - storageEntity.quantity) * (-1);
-//                } else {
-//                    diffQuantity = (storageEntity.quantity - this.previousQuantity);
-//                }
-//                if (this.previousQuantity == storageEntity.quantity) {
-//                    diffQuantity = this.previousQuantity;
-//                }
-//                int diffPrice = diffQuantity * storageEntity.price;
-//
-//                PersonEntity personEntity = providers.stream().filter(e -> e.name.equals(storageEntity.person)).findFirst().get();
-//                int index = providers.indexOf(personEntity);
-//                personEntity.total += diffPrice;
-//                providers.set(index, personEntity);
-//                providerService.updatePerson(personEntity);
-//
-//                ItemEntity itemEntity = items.stream().filter(e -> e.name.equals(storageEntity.name) && e.code.equals(storageEntity.code)).findFirst().get();
-//                index = items.indexOf(itemEntity);
-//                itemEntity.quantity += diffQuantity;
-//                if(itemEntity.quantity < 0)
-//                    itemEntity.quantity = 0;
-//
-//                items.set(index, itemEntity);
-//                itemService.updateItem(itemEntity);
+                updateItems("import");
 
                 storageObj = importService.generateStoreObject(imports);
                 renderImportTable();
@@ -1604,6 +1623,9 @@ public class ManageStore extends javax.swing.JFrame {
         } else {
             importService.deleteStorage(imports.get(selectedIndex - 1));
             imports.remove(selectedIndex - 1);
+
+            updateItems("import");
+
             storageObj = importService.generateStoreObject(imports);
             renderImportTable();
             selectedIndex = -1;
@@ -1641,31 +1663,7 @@ public class ManageStore extends javax.swing.JFrame {
                 exports.set(selectedIndex - 1, storageEntity);
                 exportService.updateStorage(storageEntity);
 
-                int diffQuantity = 0;
-                if(this.previousQuantity > storageEntity.quantity){
-                    diffQuantity = (this.previousQuantity - storageEntity.quantity) * (-1);
-                } else {
-                    diffQuantity = (storageEntity.quantity - this.previousQuantity);
-                }
-                if (this.previousQuantity == storageEntity.quantity) {
-                    diffQuantity = this.previousQuantity;
-                }
-                int diffPrice = diffQuantity * storageEntity.price;
-
-                PersonEntity personEntity = customers.stream().filter(e -> e.name.equals(storageEntity.person)).findFirst().get();
-                int index = customers.indexOf(personEntity);
-                personEntity.total += diffPrice;
-                if (personEntity.total < 0){
-                    personEntity.total = 0;
-                }
-                customers.set(index, personEntity);
-                customerService.updatePerson(personEntity);
-
-                ItemEntity itemEntity = items.stream().filter(e -> e.name.equals(storageEntity.name) && e.code.equals(storageEntity.code)).findFirst().get();
-                index = items.indexOf(itemEntity);
-                itemEntity.quantity -= diffQuantity;
-                items.set(index, itemEntity);
-                itemService.updateItem(itemEntity);
+                updateItems("export");
 
                 storageObj = exportService.generateStoreObject(exports);
                 renderExportTable();
@@ -1680,6 +1678,9 @@ public class ManageStore extends javax.swing.JFrame {
         } else {
             exportService.deleteStorage(exports.get(selectedIndex - 1));
             exports.remove(selectedIndex - 1);
+
+            updateItems("export");
+
             storageObj = exportService.generateStoreObject(exports);
             renderExportTable();
             selectedIndex = -1;
